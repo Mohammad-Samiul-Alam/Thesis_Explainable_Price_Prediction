@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>থিসিস নোট — Explainable Price Prediction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;500;600&family=Noto+Sans+Bengali:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF2EE; --paper2:#E3E9E2; --ink:#121E1A; --ink-soft:#3E4C46;
+    --gold:#AD7A28; --teal:#1F6F63; --teal-deep:#153F39; --line:#CBD4C9;
+    --card:#FFFFFF; --good:#1F6F63; --bad:#A3442A;
+    --radius:4px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#101916; --paper2:#16221D; --ink:#E8EEE9; --ink-soft:#AEBDB5;
+      --gold:#D6A84E; --teal:#4FA594; --teal-deep:#8FC9BC; --line:#2B3B34;
+      --card:#152220; --good:#4FA594; --bad:#D98567;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#101916; --paper2:#16221D; --ink:#E8EEE9; --ink-soft:#AEBDB5;
+    --gold:#D6A84E; --teal:#4FA594; --teal-deep:#8FC9BC; --line:#2B3B34;
+    --card:#152220; --good:#4FA594; --bad:#D98567;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:'Noto Serif Bengali',Georgia,serif; line-height:1.75;
+    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  html{scroll-padding-top:24px;}
+  .ui{font-family:'Noto Sans Bengali',Arial,sans-serif;}
+  a{color:var(--teal-deep);}
+  .layout{display:grid; grid-template-columns:250px 1fr; min-height:100%;}
+  nav.toc{
+    position:sticky; top:0; align-self:start; height:100vh; overflow-y:auto;
+    padding:28px 20px 28px 28px; border-right:1px solid var(--line);
+    background:var(--paper2);
+  }
+  nav.toc .brand{font-family:'Noto Sans Bengali'; font-weight:600; font-size:0.78rem;
+    letter-spacing:.02em; color:var(--gold); margin-bottom:4px;}
+  nav.toc .brand-sub{font-size:0.92rem; color:var(--ink-soft); margin-bottom:26px; line-height:1.5;}
+  nav.toc ol{list-style:none; margin:0; padding:0; counter-reset:toc;}
+  nav.toc li{counter-increment:toc; margin-bottom:2px;}
+  nav.toc a{
+    display:block; font-family:'Noto Sans Bengali'; font-size:0.86rem; color:var(--ink-soft);
+    text-decoration:none; padding:7px 10px 7px 0; border-left:2px solid transparent;
+    padding-left:12px;
+  }
+  nav.toc a::before{content:counter(toc,decimal-leading-zero) "  "; color:var(--gold); opacity:.75;}
+  nav.toc a:hover{color:var(--ink); border-left-color:var(--line);}
+  main{padding:56px 40px 100px; max-width:760px;}
+  .kicker{font-family:'Noto Sans Bengali'; font-size:0.78rem; color:var(--teal-deep); margin-bottom:10px;}
+  h1{font-size:2rem; font-weight:600; margin:0 0 10px; line-height:1.4;}
+  .sub{color:var(--ink-soft); font-size:1.05rem; max-width:60ch; margin-bottom:6px;}
+  .meta{font-family:'Noto Sans Bengali'; font-size:0.78rem; color:var(--ink-soft); margin-bottom:44px;}
+  section{margin-bottom:54px; scroll-margin-top:20px;}
+  h2{font-size:1.35rem; font-weight:600; border-bottom:1px solid var(--line); padding-bottom:10px; margin-bottom:18px;}
+  h3{font-size:1.05rem; font-weight:600; margin:22px 0 8px;}
+  p{max-width:68ch;}
+  .lead{font-size:1.05rem; color:var(--ink-soft);}
+  .callout{
+    border-left:3px solid var(--gold); background:var(--card); padding:16px 20px;
+    border-radius:var(--radius); max-width:64ch; margin:18px 0;
+  }
+  .scenario{
+    background:var(--card); border-radius:var(--radius); padding:20px 22px; max-width:64ch; margin:18px 0;
+    border:1px solid var(--line);
+  }
+  .scenario ul{margin:10px 0 14px; padding-left:22px;}
+  .scenario li{margin-bottom:5px;}
+  .q{font-style:italic; color:var(--teal-deep);}
+  .steps{counter-reset:step; margin:20px 0;}
+  .step{display:grid; grid-template-columns:38px 1fr; gap:14px; margin-bottom:20px; max-width:66ch;}
+  .step .num{
+    counter-increment:step; font-family:'Noto Sans Bengali'; font-weight:600; color:var(--gold);
+    font-size:0.95rem; padding-top:2px;
+  }
+  .step .num::before{content:counter(step,decimal-leading-zero);}
+  .step h4{margin:0 0 4px; font-size:1rem; font-family:'Noto Serif Bengali'; font-weight:600;}
+  .step p{margin:0; font-size:0.96rem; color:var(--ink-soft);}
+  .metric-grid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin:18px 0;}
+  .metric{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:14px 16px;}
+  .metric .name{font-family:'Noto Sans Bengali'; font-weight:600; color:var(--teal-deep); font-size:0.9rem;}
+  .metric p{font-size:0.88rem; margin:6px 0 0; color:var(--ink-soft);}
+  .shap-row{display:flex; align-items:center; gap:10px; margin:6px 0; max-width:62ch;}
+  .shap-label{font-family:'Noto Sans Bengali'; font-size:0.86rem; width:190px; flex:none; color:var(--ink-soft);}
+  .bar{height:10px; border-radius:2px; background:var(--line); flex:1; position:relative; overflow:hidden;}
+  .bar span{position:absolute; top:0; bottom:0; left:0; border-radius:2px;}
+  .up span{background:var(--good);}
+  .down span{background:var(--bad);}
+  table{width:100%; border-collapse:collapse; margin:18px 0; font-size:0.94rem;}
+  th,td{text-align:left; padding:10px 14px; border-bottom:1px solid var(--line); vertical-align:top;}
+  th{font-family:'Noto Sans Bengali'; font-weight:600; color:var(--teal-deep); font-size:0.82rem;}
+  .av-dis{display:grid; grid-template-columns:1fr 1fr; gap:28px;}
+  .av-dis h3{margin-top:0;}
+  .av-dis ul{padding-left:20px; margin:0;}
+  .av-dis li{margin-bottom:9px; font-size:0.95rem;}
+  .cheat{background:var(--teal-deep); color:#F3F7F3; border-radius:var(--radius); padding:22px 26px; margin:18px 0;}
+  .cheat dl{display:grid; grid-template-columns:130px 1fr; gap:8px 14px; margin:0;}
+  .cheat dt{font-family:'Noto Sans Bengali'; font-weight:600; opacity:.85; font-size:0.85rem;}
+  .cheat dd{margin:0; font-size:0.92rem;}
+  .viva{font-style:italic; border-top:1px solid rgba(255,255,255,.2); margin-top:16px; padding-top:14px; font-size:0.95rem;}
+  .refs{display:flex; flex-direction:column; gap:10px; margin:18px 0;}
+  .ref{border:1px solid var(--line); border-radius:var(--radius); padding:12px 16px; background:var(--card);}
+  .ref .t{font-weight:600; font-size:0.95rem;}
+  .ref .why{color:var(--ink-soft); font-size:0.88rem; margin-top:4px; font-family:'Noto Serif Bengali';}
+  .warn{
+    font-family:'Noto Sans Bengali'; font-size:0.86rem; color:var(--bad); background:var(--card);
+    border:1px solid var(--line); border-left:3px solid var(--bad); border-radius:var(--radius);
+    padding:12px 16px; max-width:64ch; margin:14px 0 20px;
+  }
+  footer{padding:30px 40px 60px; font-family:'Noto Sans Bengali'; font-size:0.8rem; color:var(--ink-soft); max-width:760px;}
+  @media (max-width:820px){
+    .layout{grid-template-columns:1fr;}
+    nav.toc{position:static; height:auto; border-right:none; border-bottom:1px solid var(--line);
+      overflow-x:auto; padding:18px 20px;}
+    nav.toc ol{display:flex; gap:4px;}
+    nav.toc li{margin:0;}
+    nav.toc a{white-space:nowrap; border-left:none; border-bottom:2px solid transparent; padding:6px 10px;}
+    main{padding:34px 22px 70px;}
+    .metric-grid{grid-template-columns:1fr;}
+    .av-dis{grid-template-columns:1fr;}
+    .cheat dl{grid-template-columns:100px 1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="toc">
+  <div class="brand ui">থিসিস নোট</div>
+  <div class="brand-sub">Explainable Price Prediction of Consumer Electronics in Bangladeshi E‑Commerce — সহজ বাংলা সংস্করণ</div>
+  <ol>
+    <li><a href="#problem">সমস্যা</a></li>
+    <li><a href="#dataset">ডেটাসেট</a></li>
+    <li><a href="#method">পদ্ধতি</a></li>
+    <li><a href="#metrics">মূল্যায়ন</a></li>
+    <li><a href="#shap">ব্যাখ্যাযোগ্যতা</a></li>
+    <li><a href="#gap">গবেষণার ঘাটতি</a></li>
+    <li><a href="#outcome">প্রত্যাশিত ফলাফল</a></li>
+    <li><a href="#limits">সীমাবদ্ধতা</a></li>
+    <li><a href="#tradeoffs">সুবিধা/সীমাবদ্ধতা</a></li>
+    <li><a href="#viva">ভাইভা শিট</a></li>
+    <li><a href="#refs">Reference</a></li>
+  </ol>
+</nav>
+<main>
+  <div class="kicker ui">আপনার রিসার্চ চ্যাট থেকে বাছাই করা জরুরি নোট</div>
+  <h1>থিসিসটা আসলে কী করে, এক পাতায়</h1>
+  <p class="sub">একজন ক্রেতা বুঝতে পারে না কোনো ইলেকট্রনিক্স পণ্যের দাম ন্যায্য কি না। এই থিসিস পণ্যের তথ্য দেখে দাম predict করে, আর SHAP দিয়ে বুঝিয়ে দেয় কেন এই দাম এলো — তাই মডেলটা কখনো black box থাকে না।</p>
+  <div class="meta">Md. Samiul Alam · B.Sc. in CSE, Pundra University of Science &amp; Technology</div>
+
+  <section id="problem">
+    <h2>সমস্যাটা আসলে কী</h2>
+    <p class="lead">ধরুন Daraz-এ একটা Samsung smartphone আছে। একই ফোনের ক্ষেত্রে সাধারণত দেখা যায়:</p>
+    <div class="scenario">
+      <ul>
+        <li>একজন seller চাইছে <strong>৳25,000</strong>, আরেকজন চাইছে <strong>৳27,000</strong></li>
+        <li>অন্য একটা platform-এ একই ফোনের দাম <strong>৳29,000</strong></li>
+        <li>কোথাও 10% discount, কোথাও 25% discount</li>
+        <li>কোনো পণ্যে warranty আছে, কোনোটায় নেই</li>
+      </ul>
+      <p class="q">"এই দামটা কি আসলেই ঠিক আছে?" — এটা ক্রেতার প্রশ্ন।<br>
+      "কত দামে বেচলে আমি প্রতিযোগিতায় টিকে থাকব?" — এটা বিক্রেতার প্রশ্ন।</p>
+      <p style="margin-bottom:0;">এই থিসিস এই দুই প্রশ্নেরই উত্তর খোঁজে ডেটা আর মেশিন লার্নিং দিয়ে, শুধু আন্দাজ করে না।</p>
+    </div>
+  </section>
+
+  <section id="dataset">
+    <h2>ডেটাসেট</h2>
+    <p>Daraz আর Pickaboo থেকে scrape করা প্রায় ৬,৫০০টি ইলেকট্রনিক্স পণ্যের তথ্য আছে। প্রতিটি পণ্যের নাম, ব্র্যান্ড, বিবরণ, মূল দাম, discount-কৃত দাম, discount %, warranty আর rating রয়েছে।</p>
+    <div class="callout">
+      <strong>Target variable: পণ্যের দাম।</strong> Output একটা continuous সংখ্যা (৳25,000, ৳32,500…) বলে এটা <em>regression</em> সমস্যা, classification না।
+    </div>
+  </section>
+
+  <section id="method">
+    <h2>পদ্ধতি — পাঁচটি ধাপ</h2>
+    <div class="steps">
+      <div class="step"><div class="num ui"></div><div><h4>ডেটা পরিষ্কার করা</h4><p>টেক্সট আকারের দাম ("৳25,000") সংখ্যায় রূপান্তর করা, duplicate আর অসম্পূর্ণ row বাদ দেওয়া, outlier সামলানো।</p></div></div>
+      <div class="step"><div class="num ui"></div><div><h4>নতুন feature তৈরি করা</h4><p>Product URL থেকে platform বের করা, নাম থেকে category বের করা, সাথে discount, warranty type আর description-এর দৈর্ঘ্য।</p></div></div>
+      <div class="step"><div class="num ui"></div><div><h4>Log(price) ব্যবহার করা</h4><p>দাম ৳1,000 থেকে ৳100,000+ পর্যন্ত ছড়ানো — খুব skewed। raw price-এর বদলে log(price) ব্যবহার করলে training স্থিতিশীল থাকে।</p></div></div>
+      <div class="step"><div class="num ui"></div><div><h4>মডেল ট্রেইন করা</h4><p>Linear Regression (সহজ baseline), Random Forest (অনেকগুলো tree), আর XGBoost (boosted, জটিল সম্পর্ক ধরতে পারে) — cross‑validation দিয়ে tune করা হবে।</p></div></div>
+      <div class="step"><div class="num ui"></div><div><h4>SHAP দিয়ে ব্যাখ্যা</h4><p>সবচেয়ে ভালো মডেলে SHAP প্রয়োগ করে দেখানো হবে কোন feature দাম বাড়াচ্ছে, কোনটা কমাচ্ছে — overall-ও, প্রতিটা পণ্যের জন্য আলাদাও।</p></div></div>
+    </div>
+  </section>
+
+  <section id="metrics">
+    <h2>"ভালো" কি না সেটা কীভাবে মাপা হবে</h2>
+    <div class="metric-grid">
+      <div class="metric"><div class="name ui">MAE</div><p>গড়ে কত টাকা ভুল predict করছে। Predicted ৳28,000, আসল ৳30,000 হলে — ভুল ৳2,000।</p></div>
+      <div class="metric"><div class="name ui">RMSE</div><p>MAE-এর মতোই, তবে বড় ভুলকে আরও বেশি গুরুত্ব দিয়ে মাপে।</p></div>
+      <div class="metric"><div class="name ui">R²</div><p>দামের ওঠা-নামার কত অংশ মডেল ব্যাখ্যা করতে পারছে — 1-এর কাছাকাছি মানে ভালো।</p></div>
+    </div>
+  </section>
+
+  <section id="shap">
+    <h2>মডেলকে নিজের কাজ ব্যাখ্যা করানো</h2>
+    <p>শুধু "৳35,000" বলে দেওয়াই যথেষ্ট না — এই থিসিসের মূল কথা হলো বিশ্বাসযোগ্যতা। SHAP সেই সংখ্যাটা ভেঙে দেখায় কোনটা দাম বাড়িয়েছে, কোনটা কমিয়েছে:</p>
+    <div class="scenario">
+      <div class="shap-row"><div class="shap-label ui">Brand = Samsung</div><div class="bar up"><span style="width:70%"></span></div></div>
+      <div class="shap-row"><div class="shap-label ui">Category = Smartphone</div><div class="bar up"><span style="width:85%"></span></div></div>
+      <div class="shap-row"><div class="shap-label ui">Warranty = ১ বছর</div><div class="bar up"><span style="width:30%"></span></div></div>
+      <div class="shap-row"><div class="shap-label ui">Discount প্রযোজ্য</div><div class="bar down"><span style="width:55%"></span></div></div>
+      <div class="shap-row"><div class="shap-label ui">Rating</div><div class="bar up"><span style="width:18%"></span></div></div>
+      <p style="margin:14px 0 0; font-size:0.9rem; color:var(--ink-soft);">এগুলো শুধু উদাহরণ — আসল bar-এর length আসবে ট্রেইন করা মডেল থেকে, এই পাতা থেকে না।</p>
+    </div>
+  </section>
+
+  <section id="gap">
+    <h2>গবেষণার ঘাটতি</h2>
+    <p>বাংলাদেশি e‑commerce নিয়ে বেশিরভাগ গবেষণা customer review আর sentiment নিয়েই কাজ করে। ইলেকট্রনিক্স পণ্যের price modelling — আর মডেল কেন একটা নির্দিষ্ট দাম predict করল তা ব্যাখ্যা করা — এখনো তেমন explored না। এই থিসিসের contribution হলো চারটা জিনিস একসাথে আনা, যেগুলো সাধারণত একসাথে দেখা যায় না: <strong>বাংলাদেশ + e‑commerce ইলেকট্রনিক্স + price prediction + explainable ML।</strong></p>
+  </section>
+
+  <section id="outcome">
+    <h2>প্রত্যাশিত ফলাফল</h2>
+    <table>
+      <tr><td>Price prediction model</td><td>পণ্যের তথ্য দেখে দাম অনুমান করতে পারবে।</td></tr>
+      <tr><td>দামের কারণ সম্পর্কে প্রমাণ</td><td>Brand, category, platform, warranty, discount-এর মধ্যে কোনটা সবচেয়ে বেশি প্রভাব ফেলে — SHAP থেকে বের হবে, আগে থেকে ধরে নেওয়া হবে না।</td></tr>
+      <tr><td>পুনঃব্যবহারযোগ্য cleaning pipeline</td><td>Scraped e‑commerce data পরিষ্কার করার ধাপগুলো অন্য গবেষকরাও পরে ব্যবহার করতে পারবেন।</td></tr>
+    </table>
+  </section>
+
+  <section id="limits">
+    <h2>যে সীমাবদ্ধতাগুলো শুরুতেই বলে রাখা ভালো</h2>
+    <p>মাত্র দুইটা platform (Daraz, Pickaboo) থেকে প্রায় ৬,৫০০টি listing পুরো বাংলাদেশি বাজারকে প্রতিনিধিত্ব নাও করতে পারে। Data scraped বলে কিছু তথ্য missing বা ভুল থাকতে পারে। Demand, seller-এর সুনাম, stock, মৌসুমি প্রভাবের মতো গুরুত্বপূর্ণ বিষয় dataset-এ নেই, অথচ দাম সময়ের সাথে বদলায় আর মডেল একটা নির্দিষ্ট সময়ের data দিয়ে ট্রেইন করা হবে। গবেষণাটা শুধু ইলেকট্রনিক্সের মধ্যেই সীমাবদ্ধ — অন্য category-তে একই রকম কাজ করবে তার নিশ্চয়তা নেই। SHAP শুধু contribution দেখায়, causation প্রমাণ করে না — কোনো feature গুরুত্বপূর্ণ মানেই সেটা দামের আসল কারণ, এমন না।</p>
+    <div class="warn">Data leakage নিয়ে সতর্কতা: discounted price যদি listed price × discount %-এর সরাসরি হিসাব হয়, তাহলে এই সম্পর্কটা আবার feature হিসেবে মডেলে দেওয়া যাবে না — তাতে prediction কৃত্রিমভাবে সহজ হয়ে যায়।</div>
+  </section>
+
+  <section id="tradeoffs">
+    <h2>সুবিধা আর সীমাবদ্ধতা, পাশাপাশি</h2>
+    <div class="av-dis">
+      <div>
+        <h3>সুবিধা</h3>
+        <ul>
+          <li>পণ্যের একটা যৌক্তিক দাম predict করতে পারে</li>
+          <li>শুধু সংখ্যা না, SHAP দিয়ে "কেন" সেটাও বলে</li>
+          <li>একটা না, তিনটা মডেল তুলনা করে দেখে</li>
+          <li>বিক্রেতা/platform-কে data‑driven pricing-এর দিকনির্দেশনা দেয়</li>
+          <li>এই চারটা জিনিস একসাথে নিয়ে বাংলাদেশ‑কেন্দ্রিক প্রথম কাজ</li>
+          <li>একটা পুনঃব্যবহারযোগ্য cleaning pipeline রেখে যায়</li>
+        </ul>
+      </div>
+      <div>
+        <h3>সীমাবদ্ধতা</h3>
+        <ul>
+          <li>মাত্র দুইটা platform — পুরো বাজার না</li>
+          <li>Scraped data: missing/duplicate/ভুল row থাকতে পারে</li>
+          <li>দাম সময়ের সাথে বদলায়; মডেল একটা মুহূর্তের data দেখায়</li>
+          <li>Demand, stock, seller reputation ধরা হয়নি</li>
+          <li>মাত্র তিনটা মডেল — অন্যগুলো ভিন্ন ফল দিতে পারে</li>
+          <li>SHAP contribution দেখায়, causation প্রমাণ করে না</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="viva">
+    <h2>"তোমার থিসিস কী?" জিজ্ঞেস করলে</h2>
+    <div class="cheat">
+      <dl>
+        <dt>কী</dt><dd>ইলেকট্রনিক্স পণ্যের দাম predict করা</dd>
+        <dt>কোথায়</dt><dd>বাংলাদেশের e‑commerce — Daraz ও Pickaboo</dd>
+        <dt>Data</dt><dd>প্রায় ৬,৫০০টি scraped listing</dd>
+        <dt>কীভাবে</dt><dd>পণ্যের তথ্যের ওপর ভিত্তি করে supervised regression</dd>
+        <dt>Models</dt><dd>Linear Regression, Random Forest, XGBoost</dd>
+        <dt>Evaluation</dt><dd>MAE, RMSE, R²</dd>
+        <dt>Explain</dt><dd>SHAP — overall আর প্রতিটা prediction-এর জন্য আলাদা</dd>
+        <dt>লক্ষ্য</dt><dd>স্বচ্ছ আর বিশ্বাসযোগ্য pricing বিশ্লেষণ</dd>
+      </dl>
+      <p class="viva">"আমার থিসিস brand, category, discount, warranty আর rating ব্যবহার করে Daraz আর Pickaboo-তে ইলেকট্রনিক্স পণ্যের দাম predict করে, Linear Regression, Random Forest আর XGBoost তুলনা করে — তারপর SHAP দিয়ে ব্যাখ্যা করে কোন feature কোন prediction-এ কতটা প্রভাব ফেলেছে। তাই এটা শুধু price prediction না, explainable price prediction।"</p>
+    </div>
+  </section>
+
+  <section id="refs">
+    <h2>সম্ভাব্য reference papers</h2>
+    <div class="warn">এই শিরোনামগুলো আপনার আপলোড করা চ্যাটের একটা AI-সহায়তায় করা সার্চ থেকে এসেছে — আমি নিজে সার্চ করে verify করিনি। থিসিসে লেখার আগে Google Scholar বা publisher-এর site-এ গিয়ে প্রতিটা নিজে check করে নিন।</div>
+    <div class="refs">
+      <div class="ref"><div class="t">Machine Learning Study on Cross‑border E‑commerce Products Price Prediction (2024/25)</div><div class="why">আপনার methodology-এর সবচেয়ে কাছের মিল — Lazada-এর electronics data, একই তিনটা মডেল (Linear Regression, Random Forest, XGBoost)।</div></div>
+      <div class="ref"><div class="t">Smart Pricing in Online Marketplaces: A ML and Analytics Framework (2025)</div><div class="why">সরাসরি electronic‑device price prediction নিয়ে কাজ, একাধিক regression model তুলনা করা হয়েছে।</div></div>
+      <div class="ref"><div class="t">Product Pricing Solutions Using Hybrid Machine Learning Algorithm (2022/24)</div><div class="why">Product spec-এর সাথে electronics pricing-এর সম্পর্ক, XGBoost-ভিত্তিক ensemble ব্যবহার করেছে।</div></div>
+      <div class="ref"><div class="t">Understanding Online Purchases with Explainable Machine Learning (2024)</div><div class="why">আপনার explainability অংশের জন্য SHAP methodology-এর ভালো reference।</div></div>
+      <div class="ref"><div class="t">Explainable Machine Learning for E‑Commerce Purchase Intention (2026)</div><div class="why">Price prediction না, কিন্তু একই model stack (RF/XGBoost + SHAP) — তুলনার জন্য ভালো।</div></div>
+    </div>
+    <h3>বাংলাদেশ‑কেন্দ্রিক research gap প্রতিষ্ঠার জন্য</h3>
+    <div class="refs">
+      <div class="ref"><div class="t">Predicting On‑Time Delivery: Bangladesh E‑Commerce</div><div class="why">Daraz shipment data + ML; local methodology-এর context বোঝার জন্য useful।</div></div>
+      <div class="ref"><div class="t">Sentiment Analysis of Bangladeshi E‑Commerce Site Reviews Using ML (2024)</div><div class="why">দেখায় বিদ্যমান local গবেষণা মূলত review/sentiment নিয়ে — এটা আপনার research gap-কে সমর্থন করে।</div></div>
+      <div class="ref"><div class="t">A Multimodal Deep Learning Framework for Retail Price Estimation (2025)</div><div class="why">বাংলাদেশ‑সংশ্লিষ্ট লেখক; price‑estimation methodology-এর সাথে প্রাসঙ্গিক।</div></div>
+    </div>
+    <p style="font-size:0.92rem; color:var(--ink-soft);">Daraz/Pickaboo ইলেকট্রনিক্স price prediction-কে সরাসরি SHAP-এর সাথে combine করা — এমন কোনো verified published study পাওয়া যায়নি। এটাকে আপনার gap statement-এর একটা সম্ভাব্য framing হিসেবে ধরুন, নিশ্চিত সত্য হিসেবে না।</p>
+  </section>
+
+</main>
+</div>
+<footer>Proposal আর presentation তৈরির সময় দ্রুত দেখে নেওয়ার জন্য সংক্ষেপে সাজানো হয়েছে — এটা পুরো চ্যাট export বা মূল paper-গুলো পড়ার বিকল্প না।</footer>
+</body>
+</html>
