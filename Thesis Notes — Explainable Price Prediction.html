@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Thesis Notes — Explainable Price Prediction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF2EE; --paper2:#E3E9E2; --ink:#121E1A; --ink-soft:#3E4C46;
+    --gold:#AD7A28; --teal:#1F6F63; --teal-deep:#153F39; --line:#CBD4C9;
+    --card:#FFFFFF; --good:#1F6F63; --bad:#A3442A;
+    --radius:4px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#101916; --paper2:#16221D; --ink:#E8EEE9; --ink-soft:#AEBDB5;
+      --gold:#D6A84E; --teal:#4FA594; --teal-deep:#8FC9BC; --line:#2B3B34;
+      --card:#152220; --good:#4FA594; --bad:#D98567;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#101916; --paper2:#16221D; --ink:#E8EEE9; --ink-soft:#AEBDB5;
+    --gold:#D6A84E; --teal:#4FA594; --teal-deep:#8FC9BC; --line:#2B3B34;
+    --card:#152220; --good:#4FA594; --bad:#D98567;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:'Lora',Georgia,serif; line-height:1.65;
+    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  html{scroll-padding-top:24px;}
+  .ui{font-family:'Space Grotesk',Arial,sans-serif;}
+  a{color:var(--teal-deep);}
+  .layout{display:grid; grid-template-columns:250px 1fr; min-height:100%;}
+  nav.toc{
+    position:sticky; top:0; align-self:start; height:100vh; overflow-y:auto;
+    padding:28px 20px 28px 28px; border-right:1px solid var(--line);
+    background:var(--paper2);
+  }
+  nav.toc .brand{font-family:'Space Grotesk'; font-weight:600; font-size:0.78rem;
+    letter-spacing:.02em; color:var(--gold); margin-bottom:4px;}
+  nav.toc .brand-sub{font-size:0.95rem; color:var(--ink-soft); margin-bottom:26px; line-height:1.4;}
+  nav.toc ol{list-style:none; margin:0; padding:0; counter-reset:toc;}
+  nav.toc li{counter-increment:toc; margin-bottom:2px;}
+  nav.toc a{
+    display:block; font-family:'Space Grotesk'; font-size:0.84rem; color:var(--ink-soft);
+    text-decoration:none; padding:7px 10px 7px 0; border-left:2px solid transparent;
+    padding-left:12px;
+  }
+  nav.toc a::before{content:counter(toc,decimal-leading-zero) "  "; color:var(--gold); opacity:.75;}
+  nav.toc a:hover{color:var(--ink); border-left-color:var(--line);}
+  main{padding:56px 40px 100px; max-width:760px;}
+  .kicker{font-family:'Space Grotesk'; font-size:0.78rem; color:var(--teal-deep); margin-bottom:10px;}
+  h1{font-size:2.1rem; font-weight:600; margin:0 0 10px; line-height:1.25;}
+  .sub{color:var(--ink-soft); font-size:1.05rem; max-width:58ch; margin-bottom:6px;}
+  .meta{font-family:'Space Grotesk'; font-size:0.78rem; color:var(--ink-soft); margin-bottom:44px;}
+  section{margin-bottom:54px; scroll-margin-top:20px;}
+  h2{font-size:1.4rem; font-weight:600; border-bottom:1px solid var(--line); padding-bottom:10px; margin-bottom:18px;}
+  h3{font-size:1.05rem; font-weight:600; margin:22px 0 8px;}
+  p{max-width:68ch;}
+  .lead{font-size:1.08rem; color:var(--ink-soft);}
+  .callout{
+    border-left:3px solid var(--gold); background:var(--card); padding:16px 20px;
+    border-radius:var(--radius); max-width:64ch; margin:18px 0;
+  }
+  .scenario{
+    background:var(--card); border-radius:var(--radius); padding:20px 22px; max-width:64ch; margin:18px 0;
+    border:1px solid var(--line);
+  }
+  .scenario ul{margin:10px 0 14px; padding-left:20px;}
+  .scenario li{margin-bottom:4px;}
+  .q{font-style:italic; color:var(--teal-deep);}
+  .steps{counter-reset:step; margin:20px 0;}
+  .step{display:grid; grid-template-columns:38px 1fr; gap:14px; margin-bottom:20px; max-width:66ch;}
+  .step .num{
+    counter-increment:step; font-family:'Space Grotesk'; font-weight:600; color:var(--gold);
+    font-size:0.95rem; padding-top:2px;
+  }
+  .step .num::before{content:counter(step,decimal-leading-zero);}
+  .step h4{margin:0 0 4px; font-size:1rem; font-family:'Lora'; font-weight:600;}
+  .step p{margin:0; font-size:0.96rem; color:var(--ink-soft);}
+  .metric-grid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin:18px 0;}
+  .metric{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:14px 16px;}
+  .metric .name{font-family:'Space Grotesk'; font-weight:600; color:var(--teal-deep); font-size:0.9rem;}
+  .metric p{font-size:0.88rem; margin:6px 0 0; color:var(--ink-soft);}
+  .shap-row{display:flex; align-items:center; gap:10px; margin:6px 0; max-width:62ch;}
+  .shap-label{font-family:'Space Grotesk'; font-size:0.86rem; width:190px; flex:none; color:var(--ink-soft);}
+  .bar{height:10px; border-radius:2px; background:var(--line); flex:1; position:relative; overflow:hidden;}
+  .bar span{position:absolute; top:0; bottom:0; left:0; border-radius:2px;}
+  .up span{background:var(--good);}
+  .down span{background:var(--bad);}
+  table{width:100%; border-collapse:collapse; margin:18px 0; font-size:0.92rem;}
+  th,td{text-align:left; padding:10px 14px; border-bottom:1px solid var(--line); vertical-align:top;}
+  th{font-family:'Space Grotesk'; font-weight:600; color:var(--teal-deep); font-size:0.82rem;}
+  .av-dis{display:grid; grid-template-columns:1fr 1fr; gap:28px;}
+  .av-dis h3{margin-top:0;}
+  .av-dis ul{padding-left:18px; margin:0;}
+  .av-dis li{margin-bottom:9px; font-size:0.95rem;}
+  .cheat{background:var(--teal-deep); color:var(--paper); border-radius:var(--radius); padding:22px 26px; margin:18px 0;}
+  :root[data-theme],:root:not([data-theme="light"]) .cheat{color:#F3F7F3;}
+  .cheat dl{display:grid; grid-template-columns:110px 1fr; gap:6px 14px; margin:0;}
+  .cheat dt{font-family:'Space Grotesk'; font-weight:600; opacity:.85; font-size:0.85rem;}
+  .cheat dd{margin:0; font-size:0.92rem;}
+  .viva{font-style:italic; border-top:1px solid rgba(255,255,255,.2); margin-top:16px; padding-top:14px; font-size:0.95rem;}
+  .refs{display:flex; flex-direction:column; gap:10px; margin:18px 0;}
+  .ref{border:1px solid var(--line); border-radius:var(--radius); padding:12px 16px; background:var(--card);}
+  .ref .t{font-weight:600; font-size:0.95rem;}
+  .ref .why{color:var(--ink-soft); font-size:0.86rem; margin-top:3px;}
+  .warn{
+    font-family:'Space Grotesk'; font-size:0.84rem; color:var(--bad); background:var(--card);
+    border:1px solid var(--line); border-left:3px solid var(--bad); border-radius:var(--radius);
+    padding:12px 16px; max-width:64ch; margin:14px 0 20px;
+  }
+  footer{padding:30px 40px 60px; font-family:'Space Grotesk'; font-size:0.8rem; color:var(--ink-soft); max-width:760px;}
+  @media (max-width:820px){
+    .layout{grid-template-columns:1fr;}
+    nav.toc{position:static; height:auto; border-right:none; border-bottom:1px solid var(--line);
+      overflow-x:auto; padding:18px 20px;}
+    nav.toc ol{display:flex; gap:4px;}
+    nav.toc li{margin:0;}
+    nav.toc a{white-space:nowrap; border-left:none; border-bottom:2px solid transparent; padding:6px 10px;}
+    main{padding:34px 22px 70px;}
+    .metric-grid{grid-template-columns:1fr;}
+    .av-dis{grid-template-columns:1fr;}
+    .cheat dl{grid-template-columns:90px 1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="toc">
+  <div class="brand ui">THESIS NOTES</div>
+  <div class="brand-sub">Explainable Price Prediction of Consumer Electronics in Bangladeshi E‑Commerce</div>
+  <ol>
+    <li><a href="#problem">The problem</a></li>
+    <li><a href="#dataset">Dataset</a></li>
+    <li><a href="#method">Methodology</a></li>
+    <li><a href="#metrics">Evaluation</a></li>
+    <li><a href="#shap">Explainability</a></li>
+    <li><a href="#gap">Research gap</a></li>
+    <li><a href="#outcome">Expected outcome</a></li>
+    <li><a href="#limits">Limitations</a></li>
+    <li><a href="#tradeoffs">Advantages / limits</a></li>
+    <li><a href="#viva">Viva cheat‑sheet</a></li>
+    <li><a href="#refs">Candidate references</a></li>
+  </ol>
+</nav>
+<main>
+  <div class="kicker ui">WORKING NOTES — DISTILLED FROM YOUR RESEARCH CHAT</div>
+  <h1>What the thesis actually does, in one page</h1>
+  <p class="sub">A buyer can't tell if a listed electronics price is fair. This thesis predicts that price from product data, and uses SHAP to explain why the model predicted it — so it's never a black box.</p>
+  <div class="meta">Md. Samiul Alam · B.Sc. in CSE, Pundra University of Science &amp; Technology</div>
+
+  <section id="problem">
+    <h2>The problem, concretely</h2>
+    <p class="lead">Say Daraz lists a Samsung smartphone. For the same phone model, you'll typically see:</p>
+    <div class="scenario">
+      <ul>
+        <li>One seller asking <strong>৳25,000</strong>, another asking <strong>৳27,000</strong></li>
+        <li>A different platform asking <strong>৳29,000</strong> for the same spec</li>
+        <li>10% discount on one listing, 25% on another</li>
+        <li>Warranty included on some listings, absent on others</li>
+      </ul>
+      <p class="q">"Is this price actually reasonable?" — the buyer's question.<br>
+      "What price keeps me competitive?" — the seller's question.</p>
+      <p style="margin-bottom:0;">This thesis answers both with data and machine learning, instead of guesswork.</p>
+    </div>
+  </section>
+
+  <section id="dataset">
+    <h2>Dataset</h2>
+    <p>~6,500 electronics listings scraped from Daraz and Pickaboo, each with product name, brand, description, listed price, discounted price, discount %, warranty, and rating.</p>
+    <div class="callout">
+      <strong>Target variable: product price.</strong> Because the output is a continuous number (৳25,000, ৳32,500 …) rather than a category, this is a <em>regression</em> problem, not classification.
+    </div>
+  </section>
+
+  <section id="method">
+    <h2>Methodology — five stages</h2>
+    <div class="steps">
+      <div class="step"><div class="num ui"></div><div><h4>Data preprocessing</h4><p>Convert text prices ("৳25,000") to numbers, drop duplicates and incomplete rows, handle outliers.</p></div></div>
+      <div class="step"><div class="num ui"></div><div><h4>Feature engineering</h4><p>Derive platform from the product URL, category from the product name, plus discount, warranty type, and description length.</p></div></div>
+      <div class="step"><div class="num ui"></div><div><h4>Log‑price target</h4><p>Prices range from ৳1,000 to ৳100,000+ — heavily skewed. Using log(price) instead of raw price keeps training stable.</p></div></div>
+      <div class="step"><div class="num ui"></div><div><h4>Model training</h4><p>Linear Regression (simple baseline), Random Forest (many trees), and XGBoost (boosted, handles complex relationships) — tuned with cross‑validation.</p></div></div>
+      <div class="step"><div class="num ui"></div><div><h4>SHAP explanation</h4><p>Applied to the best model to show globally and per‑product which features pushed the price up or down.</p></div></div>
+    </div>
+  </section>
+
+  <section id="metrics">
+    <h2>How "good" gets measured</h2>
+    <div class="metric-grid">
+      <div class="metric"><div class="name ui">MAE</div><p>Average rupee error. Predicted ৳28,000 vs. actual ৳30,000 → error of ৳2,000.</p></div>
+      <div class="metric"><div class="name ui">RMSE</div><p>Like MAE, but penalizes large misses more heavily than small ones.</p></div>
+      <div class="metric"><div class="name ui">R²</div><p>How much of the price variation the model explains — closer to 1 is better.</p></div>
+    </div>
+  </section>
+
+  <section id="shap">
+    <h2>Making the model explain itself</h2>
+    <p>A bare prediction — "₹35,000" — isn't enough for a thesis about trust. SHAP breaks that number down into what pushed it up or down:</p>
+    <div class="scenario">
+      <div class="shap-row"><div class="shap-label ui">Brand = Samsung</div><div class="bar up"><span style="width:70%"></span></div></div>
+      <div class="shap-row"><div class="shap-label ui">Category = Smartphone</div><div class="bar up"><span style="width:85%"></span></div></div>
+      <div class="shap-row"><div class="shap-label ui">Warranty = 1 year</div><div class="bar up"><span style="width:30%"></span></div></div>
+      <div class="shap-row"><div class="shap-label ui">Discount applied</div><div class="bar down"><span style="width:55%"></span></div></div>
+      <div class="shap-row"><div class="shap-label ui">Rating</div><div class="bar up"><span style="width:18%"></span></div></div>
+      <p style="margin:14px 0 0; font-size:0.9rem; color:var(--ink-soft);">Illustrative only — real bar lengths come from the trained model, not from this page.</p>
+    </div>
+  </section>
+
+  <section id="gap">
+    <h2>Research gap</h2>
+    <p>Most Bangladeshi e‑commerce research targets customer reviews and sentiment. Price modelling of electronics listings — and explaining <em>why</em> a model predicts a given price — is largely unexplored here. The contribution is combining four things that aren't usually combined: <strong>Bangladesh + e‑commerce electronics + price prediction + explainable ML.</strong></p>
+  </section>
+
+  <section id="outcome">
+    <h2>Expected outcome</h2>
+    <table>
+      <tr><td>Price prediction model</td><td>Estimates a consumer electronics listing's price from its attributes.</td></tr>
+      <tr><td>Evidence on price drivers</td><td>Which of brand, category, platform, warranty, discount matter most — determined by SHAP, not assumed in advance.</td></tr>
+      <tr><td>Reusable cleaning pipeline</td><td>Documented steps other researchers can reapply to scraped e‑commerce data.</td></tr>
+    </table>
+  </section>
+
+  <section id="limits">
+    <h2>Limitations to state upfront</h2>
+    <p>~6,500 listings from only two platforms (Daraz, Pickaboo) may not represent the full Bangladeshi market. The data is scraped, so missing fields and scraping errors are possible. Important real‑world factors — demand, seller reputation, stock, seasonality — aren't in the dataset, and prices change over time while the model is trained on one snapshot. The study covers electronics only; results may not generalize to other categories. SHAP explains contribution, not causation — a feature mattering to the model doesn't prove it <em>causes</em> the price.</p>
+    <div class="warn">Data‑leakage check: if discounted price is engineered directly from listed price × discount %, don't feed that derived relationship back in as a feature — it makes prediction artificially easy.</div>
+  </section>
+
+  <section id="tradeoffs">
+    <h2>Advantages and limits, side by side</h2>
+    <div class="av-dis">
+      <div>
+        <h3>Advantages</h3>
+        <ul>
+          <li>Predicts a reasonable price for a given listing</li>
+          <li>Explains <em>why</em>, via SHAP — not just a number</li>
+          <li>Compares three models rather than relying on one</li>
+          <li>Gives sellers/platforms a data‑driven pricing reference</li>
+          <li>First Bangladesh‑focused work combining these elements</li>
+          <li>Leaves behind a reusable cleaning pipeline</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Limits</h3>
+        <ul>
+          <li>Two platforms only — not the whole market</li>
+          <li>Scraped data: missing/duplicate/incorrect rows possible</li>
+          <li>Prices drift over time; model reflects one snapshot</li>
+          <li>Demand, stock, seller reputation aren't captured</li>
+          <li>Three models only — others might perform differently</li>
+          <li>SHAP shows contribution, not proof of causation</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="viva">
+    <h2>If asked "what's your thesis?"</h2>
+    <div class="cheat">
+      <dl>
+        <dt>What</dt><dd>Predict consumer electronics prices</dd>
+        <dt>Where</dt><dd>Bangladesh e‑commerce — Daraz &amp; Pickaboo</dd>
+        <dt>Data</dt><dd>~6,500 scraped listings</dd>
+        <dt>How</dt><dd>Supervised regression on product attributes</dd>
+        <dt>Models</dt><dd>Linear Regression, Random Forest, XGBoost</dd>
+        <dt>Evaluation</dt><dd>MAE, RMSE, R²</dd>
+        <dt>Explain</dt><dd>SHAP — global and per‑prediction</dd>
+        <dt>Goal</dt><dd>Transparent, trustworthy pricing analysis</dd>
+      </dl>
+      <p class="viva">"My thesis predicts the price of consumer electronics on Daraz and Pickaboo using brand, category, discount, warranty, and rating, comparing Linear Regression, Random Forest, and XGBoost — then uses SHAP to explain which features drove each prediction. So it's not just price prediction, it's <em>explainable</em> price prediction."</p>
+    </div>
+  </section>
+
+  <section id="refs">
+    <h2>Candidate references</h2>
+    <div class="warn">These titles came out of an AI‑assisted search in your uploaded chat, not a database search I ran myself — I haven't independently verified the authors, venues, or DOIs. Confirm each one on the publisher's site (or Google Scholar) before citing it in the actual thesis.</div>
+    <div class="refs">
+      <div class="ref"><div class="t">Machine Learning Study on Cross‑border E‑commerce Products Price Prediction (2024/25)</div><div class="why">Closest methodological match — Lazada electronics data, same three models (Linear Regression, Random Forest, XGBoost).</div></div>
+      <div class="ref"><div class="t">Smart Pricing in Online Marketplaces: A ML and Analytics Framework (2025)</div><div class="why">Direct electronic‑device price prediction, multiple regression models compared.</div></div>
+      <div class="ref"><div class="t">Product Pricing Solutions Using Hybrid Machine Learning Algorithm (2022/24)</div><div class="why">Electronics pricing tied to product specs, XGBoost‑based ensemble.</div></div>
+      <div class="ref"><div class="t">Understanding Online Purchases with Explainable Machine Learning (2024)</div><div class="why">SHAP methodology reference for the explainability section.</div></div>
+      <div class="ref"><div class="t">Explainable Machine Learning for E‑Commerce Purchase Intention (2026)</div><div class="why">Not price prediction, but same model stack (RF/XGBoost + SHAP) for comparison.</div></div>
+    </div>
+    <h3>For establishing the Bangladesh‑specific gap</h3>
+    <div class="refs">
+      <div class="ref"><div class="t">Predicting On‑Time Delivery: Bangladesh E‑Commerce</div><div class="why">Daraz shipment data + ML; useful for local methodology context.</div></div>
+      <div class="ref"><div class="t">Sentiment Analysis of Bangladeshi E‑Commerce Site Reviews Using ML (2024)</div><div class="why">Shows the existing local focus is reviews/sentiment — supports your stated research gap.</div></div>
+      <div class="ref"><div class="t">A Multimodal Deep Learning Framework for Retail Price Estimation (2025)</div><div class="why">Bangladesh‑affiliated authors; relevant to price‑estimation methodology.</div></div>
+    </div>
+    <p style="font-size:0.9rem; color:var(--ink-soft);">No verified published study was found combining Daraz/Pickaboo electronics price prediction with SHAP specifically — treat that as a possible framing for your gap statement, not a confirmed fact.</p>
+  </section>
+
+</main>
+</div>
+<footer>Distilled for quick reference while preparing the proposal and presentation — not a substitute for reading the full chat export or the cited papers themselves.</footer>
+</body>
+</html>
