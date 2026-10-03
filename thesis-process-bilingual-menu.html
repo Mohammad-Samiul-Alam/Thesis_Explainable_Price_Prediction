@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Full Thesis Process, Step by Step</title>
+<style>
+:root{--bg:#F2F5F2;--paper:#fff;--ink:#13201A;--mute:#55655C;--green:#0C4A36;--red:#D8402F;--gold:#E9AE2B;--line:#D3DCD5;--code:#0F1F18;--codeink:#DDEFE4}
+@media(prefers-color-scheme:dark){:root{--bg:#0D1612;--paper:#15221B;--ink:#E9F0EA;--mute:#9DB0A4;--green:#6FD3A6;--red:#FF7A68;--gold:#F2C14E;--line:#27382E;--code:#0A120E}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.7 "Source Serif 4",Georgia,serif;padding-top:env(safe-area-inset-top,0px)}
+h1,h2,.sans,.row>b,th,.strip a{font-family:"Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,system-ui,sans-serif}
+.w{max-width:860px;margin:0 auto;padding:0 22px}
+header{padding:52px 0 26px}
+header i{display:inline-block;width:13px;height:13px;border-radius:50%;background:var(--red);margin-right:9px}
+h1{font-size:clamp(32px,6vw,52px);line-height:1.1;letter-spacing:-.02em;margin:12px 0 10px;color:var(--green)}
+.sub{color:var(--mute);margin:0}
+.strip{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 4px;padding:0;list-style:none}
+.strip a{display:flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:3px 14px 3px 4px;color:var(--ink);text-decoration:none;font-size:15px;font-weight:500}
+.strip a b{background:var(--green);color:var(--bg);width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:14px}
+.strip a:hover{border-color:var(--green)}
+.step{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:24px 26px;margin:22px 0;scroll-margin-top:14px}
+.step>h2{display:flex;gap:14px;align-items:center;margin:0 0 6px;font-size:25px;line-height:1.25;color:var(--green)}
+.step>h2 b{flex:none;width:42px;height:42px;border-radius:50%;background:var(--green);color:var(--bg);display:grid;place-items:center;font-size:20px}
+.one{color:var(--mute);margin:0 0 16px}
+.row{display:grid;grid-template-columns:110px 1fr;gap:6px 16px;padding:12px 0;border-top:1px dashed var(--line)}
+@media(max-width:620px){.row{grid-template-columns:1fr}}
+.row>b{font-size:15px;color:var(--red)}
+.row>div>*:last-child{margin-bottom:0}
+.row p{margin:0 0 8px}
+.row ul{margin:0;padding-left:20px}
+.row li{margin-bottom:4px}
+.ex{background:color-mix(in srgb,var(--gold) 16%,transparent);border-radius:8px;padding:10px 14px}
+.out{background:color-mix(in srgb,var(--green) 12%,transparent);border-radius:8px;padding:10px 14px;font-weight:600}
+pre{background:var(--code);color:var(--codeink);border-radius:8px;padding:12px 16px;overflow-x:auto;font:14px/1.6 ui-monospace,Menlo,Consolas,monospace;margin:8px 0 0}
+code{font:15px ui-monospace,Menlo,Consolas,monospace;background:color-mix(in srgb,var(--green) 12%,transparent);padding:1px 6px;border-radius:4px}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{border:1px solid var(--line);padding:7px 12px;text-align:left}
+th{background:color-mix(in srgb,var(--green) 12%,var(--paper))}
+.warn{border-left:6px solid var(--red);background:color-mix(in srgb,var(--red) 8%,var(--paper));border-radius:8px;padding:10px 14px;margin-top:8px}
+.end{background:var(--green);color:var(--bg);border-radius:14px;padding:26px 28px;margin:28px 0 50px}
+.end h2{margin:0 0 10px;font-size:24px}
+.end ul{margin:0;padding-left:22px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+html[lang=bn] body{font-family:"Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,SolaimanLipi,sans-serif;line-height:1.85}
+html[lang=bn] h1,html[lang=bn] h2{letter-spacing:0;line-height:1.4}
+html[lang=bn] .row{grid-template-columns:96px 1fr}
+@media(max-width:620px){html[lang=bn] .row{grid-template-columns:1fr}}
+.lang-btn{position:fixed;z-index:30;top:calc(12px + env(safe-area-inset-top,0px));right:12px;background:var(--paper);color:var(--ink);border:2px solid var(--green);border-radius:999px;padding:8px 16px;font:700 15px "Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,sans-serif;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.lang-btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+/* ---------- side menu ---------- */
+:root{--sw:292px;--side:#0A3A2A;--side-ink:#CBE0D4;--side-mute:#86A595}
+@media(prefers-color-scheme:dark){:root{--side:#07110D;--side-ink:#CBE0D4;--side-mute:#7C9A8A}}
+.side{position:fixed;inset:0 auto 0 0;width:var(--sw);background:var(--side);color:var(--side-ink);display:flex;flex-direction:column;z-index:40;overflow-y:auto;overscroll-behavior:contain;padding-top:env(safe-area-inset-top,0px)}
+.side .brand{padding:26px 22px 18px;border-bottom:1px solid rgba(255,255,255,.09)}
+.side .mark{display:inline-flex;align-items:center;gap:9px;background:var(--gold);color:#2f2200;font:800 14px "Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,system-ui,sans-serif;padding:5px 14px 5px 10px;border-radius:4px 14px 14px 4px}
+.side .mark::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--side)}
+.side h2{margin:14px 0 0;color:#fff;font-size:19px;line-height:1.35;font-weight:700;font-family:"Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,system-ui,sans-serif}
+.side .brand p{margin:5px 0 0;font-size:14px;line-height:1.5;color:var(--side-mute);font-family:"Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,system-ui,sans-serif}
+.langsw{display:flex;margin-top:16px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:3px;gap:2px}
+.langsw button{flex:1;border:0;background:transparent;color:var(--side-ink);font:600 14px "Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,system-ui,sans-serif;padding:6px 12px;border-radius:7px;cursor:pointer}
+.langsw button:hover{color:#fff}
+.langsw button[aria-pressed="true"]{background:var(--gold);color:#2f2200}
+.langsw button:focus-visible,.side a:focus-visible,#menuBtn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.nav{padding:10px 12px 26px;flex:1;font-family:"Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,system-ui,sans-serif}
+.nav .grp{font-size:13px;font-weight:600;color:var(--side-mute);padding:16px 12px 6px}
+.nav a{display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:9px;color:var(--side-ink);text-decoration:none;font-size:15.5px;line-height:1.4;border-left:3px solid transparent;transition:background .15s,color .15s}
+.nav a:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav a.active{background:rgba(233,174,43,.15);color:#fff;border-left-color:var(--gold)}
+.nav .n{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:700 13px "Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,system-ui,sans-serif;background:rgba(255,255,255,.1);color:var(--side-ink)}
+.nav a.active .n{background:var(--gold);color:#2f2200}
+.nav a.done .n{background:rgba(111,211,166,.25);color:#cff3e0}
+.sbar{margin:0 22px 18px;height:5px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden}
+.sbar i{display:block;height:100%;width:0;background:var(--gold);border-radius:3px;transition:width .2s}
+.scrim,.topbar{display:none}
+@media(min-width:961px){#page{margin-left:var(--sw)}}
+@media(max-width:960px){
+  .side{transform:translateX(-100%);transition:transform .25s ease;box-shadow:0 0 40px rgba(0,0,0,.4)}
+  body.open .side{transform:none}
+  body.open .scrim{display:block;position:fixed;inset:0;background:rgba(4,12,8,.55);z-index:35}
+  .topbar{display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:30;background:var(--side);color:#fff;padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top,0px))}
+  .topbar #menuBtn{background:rgba(255,255,255,.12);border:0;color:#fff;width:40px;height:40px;border-radius:8px;font-size:20px;cursor:pointer}
+  .topbar .ttl{flex:1;font:700 16px "Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,system-ui,sans-serif}
+  .topbar .langsw{margin:0;width:auto}
+  .topbar .langsw button{flex:none;padding:6px 12px}
+  body{padding-top:0}
+  html{scroll-padding-top:70px}
+  .step,.end,header{scroll-margin-top:70px}
+  header{padding-top:36px}
+}
+
+.row>div{min-width:0}
+@media(max-width:620px){.row,html[lang=bn] .row{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<aside class="side" id="side" aria-label="Menu">
+  <div class="brand">
+    <span class="mark">raw.csv → SHAP</span>
+    <h2 id="sTitle"></h2>
+    <p id="sSub"></p>
+    <div class="langsw" role="group" aria-label="Language / ভাষা">
+      <button type="button" data-setlang="bn">বাংলা</button>
+      <button type="button" data-setlang="en">English</button>
+    </div>
+  </div>
+  <nav class="nav" id="nav"></nav>
+  <div class="sbar" aria-hidden="true"><i id="sprog"></i></div>
+</aside>
+<div class="scrim" id="scrim"></div>
+<div class="topbar">
+  <button id="menuBtn" type="button" aria-controls="side" aria-expanded="false">☰</button>
+  <span class="ttl" id="tTitle"></span>
+  <div class="langsw" role="group" aria-label="Language / ভাষা">
+    <button type="button" data-setlang="bn">বাং</button>
+    <button type="button" data-setlang="en">EN</button>
+  </div>
+</div>
+<div id="page"><header id="top"><div class="w">
+<i></i><span class="sub sans">From raw.csv to SHAP</span>
+<h1>The Full Thesis Process, Step by Step</h1>
+<p class="sub">Nine steps. Each one covers what to do, why, how, an example and the result. All numbers come from your real data.</p>
+<ol class="strip">
+<li><a href="#s1"><b>1</b>Inspect</a></li><li><a href="#s2"><b>2</b>Clean</a></li><li><a href="#s3"><b>3</b>Target</a></li><li><a href="#s4"><b>4</b>Log</a></li><li><a href="#s5"><b>5</b>Features</a></li><li><a href="#s6"><b>6</b>Split</a></li><li><a href="#s7"><b>7</b>Train</a></li><li><a href="#s8"><b>8</b>Evaluate</a></li><li><a href="#s9"><b>9</b>SHAP</a></li>
+</ol>
+</div></header>
+
+<main class="w">
+
+<article class="step" id="s1">
+<h2><b>1</b>Inspect the data</h2>
+<p class="one">Before any work, learn what the data holds and where it is messy.</p>
+<div class="row"><b>What to do</b><div><p>Load raw.csv, count rows and columns, and check how much is empty in each column.</p></div></div>
+<div class="row"><b>Why</b><div><p>Running a model on data you have not checked gives wrong results.</p></div></div>
+<div class="row"><b>How</b><div><pre>df = pd.read_csv("raw.csv")
+print(df.shape)          # (6504, 13)
+print(df.isna().sum())   # where it is empty
+print(df.platform_name.value_counts())</pre></div></div>
+<div class="row"><b>Example</b><div class="ex">Pickaboo has 4,536 rows, Daraz 1,959, and 9 rows are broken. platform_name is filled only for Pickaboo.</div></div>
+<div class="row"><b>Result</b><div class="out">A list of what is fine and what needs fixing.</div></div>
+</article>
+
+<article class="step" id="s2">
+<h2><b>2</b>Clean the data</h2>
+<p class="one">Turn raw data into something a machine can read.</p>
+<div class="row"><b>What to do</b><div><ul>
+<li>Drop 9 broken rows (review text broke the CSV and landed in product_url).</li>
+<li>Drop 506 rows with no price.</li>
+<li>Drop 31 duplicate URLs and repeated products.</li>
+<li>Convert price text to numbers.</li>
+<li>Drop the reviews column (junk).</li></ul></div></div>
+<div class="row"><b>Why</b><div><p>"৳ 3,049" is text, and a model needs a number. Broken rows and duplicates distort the results.</p></div></div>
+<div class="row"><b>How</b><div><pre>df = df[df.product_url.astype(str).str.startswith("http")]
+num = lambda s: pd.to_numeric(
+    s.astype(str).str.replace(r"[^\d.]", "", regex=True), errors="coerce")
+df["price"] = num(df.discounted_price).fillna(num(df.listed_price))
+df = df[df.price.notna()].drop_duplicates("product_url")</pre></div></div>
+<div class="row"><b>Example</b><div class="ex">"৳ 3,049" becomes 3049. Row 82 had <code>22""</code> as its product_name, so it is dropped.</div></div>
+<div class="row"><b>Result</b><div class="out">6,504 rows become about 5,958 usable rows (Pickaboo 4,058, Daraz 1,900). This script is your reusable pipeline.</div></div>
+</article>
+
+<article class="step" id="s3">
+<h2><b>3</b>Set the target and avoid data leakage</h2>
+<p class="one">The most important decision: what to predict, and what not to feed in.</p>
+<div class="row"><b>What to do</b><div><p>Target = final price (discounted_price, or listed_price when there is no discount). Remove <code>listed_price</code> and <code>discount_percent</code> from the inputs.</p></div></div>
+<div class="row"><b>Why</b><div><p>Listed price and discounted price correlate at 0.98. Giving the model a near copy of the answer makes it cheat.</p>
+<div class="warn">Get this wrong and R² looks fake-good, which weakens the whole thesis.</div></div></div>
+<div class="row"><b>How</b><div><pre>y = df["price"]
+drop = ["listed_price","discount_percent","discounted_price"]
+X = features.drop(columns=drop, errors="ignore")</pre><p>Alternative: keep discount as a feature and use listed_price as the target. Either way, write down the reason in the thesis.</p></div></div>
+<div class="row"><b>Example</b><div class="ex">Anker earbuds: listed ৳3,390, discount -10%, discounted ৳3,049. With ৳3,390 as an input, ৳3,049 is easy to guess, but that is looking up the answer, not learning.</div></div>
+<div class="row"><b>Result</b><div class="out">A clean target and a leakage-free list of inputs.</div></div>
+</article>
+
+<article class="step" id="s4">
+<h2><b>4</b>Use log price</h2>
+<p class="one">A way to handle huge differences in price.</p>
+<div class="row"><b>What to do</b><div><p>Train the model on log(price) instead of price.</p></div></div>
+<div class="row"><b>Why</b><div><p>Prices run from ৳2 to ৳5,99,000 with a median of ৳1,371. A few expensive laptops pull the whole model toward them. Skewness is 8.7 on raw price and 0.49 on log price.</p></div></div>
+<div class="row"><b>How</b><div><pre>y_log = np.log(df["price"])      # what the model learns
+pred_taka = np.exp(pred_log)      # convert back to taka</pre></div></div>
+<div class="row"><b>Example</b><div class="ex">৳1,000 and ৳100,000 differ 100 times. In log terms they are 6.9 and 11.5, much closer.</div></div>
+<div class="row"><b>Result</b><div class="out">More stable training. Back the choice with the skewness numbers in the thesis.</div></div>
+</article>
+
+<article class="step" id="s5">
+<h2><b>5</b>Create features (feature engineering)</h2>
+<p class="one">Build useful information from the raw columns. This is where most of the model's quality comes from.</p>
+<div class="row"><b>What to do</b><div class="tw"><table>
+<tr><th>Feature</th><th>Where it comes from</th></tr>
+<tr><td>Platform</td><td>Whether the URL has pickaboo or daraz</td></tr>
+<tr><td>Category</td><td>Keywords in the name: laptop, earphone, charger...</td></tr>
+<tr><td>Brand</td><td>Brand column, rare brands grouped as "Other"</td></tr>
+<tr><td>Warranty</td><td>"18 Months..." becomes 18 months</td></tr>
+<tr><td>Description length</td><td>Character count of the description</td></tr>
+<tr><td>Specs</td><td>GB, RAM, mAh, watt, inch pulled out with regex</td></tr>
+</table></div></div>
+<div class="row"><b>Why</b><div><p>A model cannot read a raw product name, but it understands category = laptop.</p></div></div>
+<div class="row"><b>How</b><div><pre>df["platform"] = np.where(df.product_url.str.contains("pickaboo"),
+                          "Pickaboo", "Daraz")
+df["dlen"] = df.product_description.fillna("").str.len()
+df["ram_gb"] = df.product_name.str.extract(r"(\d+)\s*GB", expand=False)</pre></div></div>
+<div class="row"><b>Careful</b><div><div class="warn">Daraz is 92% "No Brand" and its warranty is effectively unknown. Rating is about 60% empty, so it is not a main feature. The category rule leaves 1,335 rows as "other", so improve the rule.</div></div></div>
+<div class="row"><b>Result</b><div class="out">One clean row of features for each product.</div></div>
+</article>
+
+<article class="step" id="s6">
+<h2><b>6</b>Split the data (train/test)</h2>
+<p class="one">Keep some data aside to test the model honestly.</p>
+<div class="row"><b>What to do</b><div><p>80% for training, 20% for testing. Turn categorical columns (brand, category) into numbers.</p></div></div>
+<div class="row"><b>Why</b><div><p>Testing on data the model already saw always looks good, and that is misleading. The same product on both sides causes the same problem.</p></div></div>
+<div class="row"><b>How</b><div><pre>from sklearn.model_selection import GroupShuffleSplit
+gss = GroupShuffleSplit(test_size=0.2, random_state=0)
+tr, te = next(gss.split(X, y_log, groups=df.product_name))</pre></div></div>
+<div class="row"><b>Result</b><div class="out">Separate train and test sets. Run cross-validation on top.</div></div>
+</article>
+
+<article class="step" id="s7">
+<h2><b>7</b>Train three models</h2>
+<p class="one">From simple to complex: compare three kinds of model.</p>
+<div class="row"><b>What to do</b><div class="tw"><table>
+<tr><th>Model</th><th>What it does</th></tr>
+<tr><td>Linear Regression</td><td>Simple direct relationships, the baseline</td></tr>
+<tr><td>Random Forest</td><td>Averages many decision trees</td></tr>
+<tr><td>XGBoost</td><td>Learns by correcting its own mistakes, captures complex patterns</td></tr>
+</table></div></div>
+<div class="row"><b>Why</b><div><p>If a simple model gives nearly the same result, the complex one is less needed. You cannot name a best model without comparing.</p></div></div>
+<div class="row"><b>How</b><div><pre>models = {"LR": LinearRegression(),
+          "RF": RandomForestRegressor(300, random_state=0),
+          "XGB": XGBRegressor(n_estimators=400, learning_rate=0.05)}
+for name, m in models.items(): m.fit(X.iloc[tr], y_log.iloc[tr])</pre></div></div>
+<div class="row"><b>Example</b><div class="ex">Quick baseline: Ridge R² 0.61, Random Forest R² 0.71. XGBoost has not been run yet.</div></div>
+<div class="row"><b>Result</b><div class="out">Three trained models.</div></div>
+</article>
+
+<article class="step" id="s8">
+<h2><b>8</b>Evaluate the models</h2>
+<p class="one">Show with numbers which model is best.</p>
+<div class="row"><b>What to do</b><div class="tw"><table>
+<tr><th>Metric</th><th>Meaning</th></tr>
+<tr><td>MAE</td><td>Average error in taka</td></tr>
+<tr><td>RMSE</td><td>Punishes big mistakes more</td></tr>
+<tr><td>R²</td><td>How much of the price variation is explained</td></tr>
+</table></div></div>
+<div class="row"><b>Why</b><div><p>Laptop prices run into the lakhs, so MAE in taka is dominated by laptops. Report both log scale and taka, and break results down by category.</p></div></div>
+<div class="row"><b>How</b><div><pre>p = m.predict(X.iloc[te])
+mae = mean_absolute_error(np.exp(y_log.iloc[te]), np.exp(p))
+r2  = r2_score(y_log.iloc[te], p)</pre></div></div>
+<div class="row"><b>Example</b><div class="ex">Actual ৳30,000 and predicted ৳28,000 is an error of ৳2,000.</div></div>
+<div class="row"><b>Result</b><div class="out">A comparison table and the choice of best model.</div></div>
+</article>
+
+<article class="step" id="s9">
+<h2><b>9</b>Explain with SHAP, and state limitations</h2>
+<p class="one">The "Explainable" part of the thesis and its main novelty.</p>
+<div class="row"><b>What to do</b><div><ul>
+<li>Summary plot: which features matter most overall.</li>
+<li>Dependence plot: how price changes as one feature changes.</li>
+<li>Waterfall plot: a separate explanation for 3-4 products.</li></ul></div></div>
+<div class="row"><b>Why</b><div><p>"The price is ৳35,000" is not enough. Saying why it is ৳35,000 is what sets your thesis apart.</p></div></div>
+<div class="row"><b>How</b><div><pre>import shap
+ex = shap.TreeExplainer(best_model)
+sv = ex(X.iloc[te])
+shap.summary_plot(sv, X.iloc[te])
+shap.plots.waterfall(sv[0])</pre></div></div>
+<div class="row"><b>Careful</b><div><div class="warn">Brand and platform overlap (Daraz = No Brand), so keep that in mind when reading SHAP. Do not assume a feature ranking in advance; let the results decide it.</div></div></div>
+<div class="row"><b>Limitations</b><div><ul>
+<li>These are listing prices, not actual sale prices.</li>
+<li>The data is a single snapshot.</li>
+<li>Daraz lacks brand and warranty information, so platform comparison is not fully fair.</li>
+<li>The data is mostly accessories, so the scope is "consumer electronics, accessories and devices".</li></ul></div></div>
+<div class="row"><b>Result</b><div class="out">A predicted price plus how much each feature contributed to it.</div></div>
+</article>
+
+<section class="end" id="end">
+<h2>What the thesis will contain at the end</h2>
+<ul>
+<li>The cleaned dataset and the reusable cleaning script</li>
+<li>A comparison table of the three models (MAE, RMSE, R²)</li>
+<li>SHAP summary, dependence and waterfall plots</li>
+<li>The reasoning behind the leakage and log price decisions</li>
+<li>A Limitations section</li>
+</ul>
+</section>
+</main></div>
+<template id="tpl-bn"><header id="top"><div class="w">
+<i></i><span class="sub">raw.csv থেকে SHAP পর্যন্ত</span>
+<h1>থিসিসের পুরো প্রক্রিয়া: ভেঙে ভেঙে</h1>
+<p class="sub">৯টি ধাপ। প্রতিটি ধাপে: কী করবেন, কেন, কীভাবে, উদাহরণ ও ফল। সংখ্যাগুলো আপনার আসল ডেটা থেকে নেওয়া।</p>
+<ol class="strip">
+<li><a href="#s1"><b>১</b>ডেটা দেখা</a></li><li><a href="#s2"><b>২</b>পরিষ্কার</a></li><li><a href="#s3"><b>৩</b>Target</a></li><li><a href="#s4"><b>৪</b>Log</a></li><li><a href="#s5"><b>৫</b>Feature</a></li><li><a href="#s6"><b>৬</b>Split</a></li><li><a href="#s7"><b>৭</b>Train</a></li><li><a href="#s8"><b>৮</b>মূল্যায়ন</a></li><li><a href="#s9"><b>৯</b>SHAP</a></li>
+</ol>
+</div></header>
+
+<main class="w">
+
+<article class="step" id="s1">
+<h2><b>১</b>ডেটা দেখে নেওয়া</h2>
+<p class="one">কাজ শুরুর আগে বুঝুন ডেটায় কী আছে এবং কোথায় গোলমাল।</p>
+<div class="row"><b>কী করবেন</b><div><p>raw.csv পড়ুন, row-column গুনুন, কোন column-এ কতটা ফাঁকা দেখুন।</p></div></div>
+<div class="row"><b>কেন</b><div><p>না দেখে model চালালে ভুল ডেটায় ভুল ফল আসে।</p></div></div>
+<div class="row"><b>কীভাবে</b><div><pre>df = pd.read_csv("raw.csv")
+print(df.shape)          # (6504, 13)
+print(df.isna().sum())   # কোথায় ফাঁকা
+print(df.platform_name.value_counts())</pre></div></div>
+<div class="row"><b>উদাহরণ</b><div class="ex">Pickaboo ৪,৫৩৬টি, Daraz ১,৯৫৯টি, ৯টি row ভাঙা। platform_name শুধু Pickaboo-র জন্য ভরা।</div></div>
+<div class="row"><b>ফল</b><div class="out">ডেটার একটা তালিকা: কী ঠিক আছে, কী ঠিক করতে হবে।</div></div>
+</article>
+
+<article class="step" id="s2">
+<h2><b>২</b>ডেটা পরিষ্কার (Cleaning)</h2>
+<p class="one">কাঁচা ডেটাকে machine-এর পড়ার উপযোগী করা।</p>
+<div class="row"><b>কী করবেন</b><div><ul>
+<li>৯টি ভাঙা row বাদ (review-এর টেক্সট CSV ভেঙে product_url-এ ঢুকেছে)।</li>
+<li>দাম-ছাড়া ৫০৬টি row বাদ।</li>
+<li>৩১টি duplicate URL ও একই পণ্য বাদ।</li>
+<li>দামের লেখা সংখ্যায় বদলানো।</li>
+<li>reviews column বাদ (junk)।</li></ul></div></div>
+<div class="row"><b>কেন</b><div><p>"৳ 3,049" একটা লেখা, model সংখ্যা চায়। ভাঙা row ও duplicate ফলকে বিকৃত করে।</p></div></div>
+<div class="row"><b>কীভাবে</b><div><pre>df = df[df.product_url.astype(str).str.startswith("http")]
+num = lambda s: pd.to_numeric(
+    s.astype(str).str.replace(r"[^\d.]", "", regex=True), errors="coerce")
+df["price"] = num(df.discounted_price).fillna(num(df.listed_price))
+df = df[df.price.notna()].drop_duplicates("product_url")</pre></div></div>
+<div class="row"><b>উদাহরণ</b><div class="ex">"৳ 3,049" → 3049। row 82-এর product_name ছিল <code>22""</code>, তাই বাদ।</div></div>
+<div class="row"><b>ফল</b><div class="out">৬,৫০৪ → প্রায় ৫,৯৫৮টি ব্যবহারযোগ্য row (Pickaboo ৪,০৫৮, Daraz ১,৯০০)। এই script-ই আপনার reusable pipeline।</div></div>
+</article>
+
+<article class="step" id="s3">
+<h2><b>৩</b>Target ঠিক করা ও data leakage এড়ানো</h2>
+<p class="one">সবচেয়ে গুরুত্বপূর্ণ সিদ্ধান্ত: কী predict করবেন, আর কী input দেবেন না।</p>
+<div class="row"><b>কী করবেন</b><div><p>Target = final price (discounted_price, না থাকলে listed_price)। <code>listed_price</code> ও <code>discount_percent</code> input থেকে বাদ দিন।</p></div></div>
+<div class="row"><b>কেন</b><div><p>Listed price ও discounted price-এর correlation ০.৯৮। উত্তরের প্রায় কপি input-এ দিলে model "cheat" করে।</p>
+<div class="warn">ভুল করলে R² নকল ভালো আসবে এবং পুরো থিসিস দুর্বল হবে।</div></div></div>
+<div class="row"><b>কীভাবে</b><div><pre>y = df["price"]
+drop = ["listed_price","discount_percent","discounted_price"]
+X = features.drop(columns=drop, errors="ignore")</pre><p>বিকল্প: discount feature রাখতে চাইলে target = listed_price। যেটাই নিন, থিসিসে কারণ লিখুন।</p></div></div>
+<div class="row"><b>উদাহরণ</b><div class="ex">Anker earbuds: listed ৳3,390, discount -10%, discounted ৳3,049। Input-এ ৳3,390 থাকলে ৳3,049 অনুমান করা সহজ, এটা শিখে ফেলা নয়, জেনে ফেলা।</div></div>
+<div class="row"><b>ফল</b><div class="out">পরিষ্কার একটি target ও leakage-মুক্ত input তালিকা।</div></div>
+</article>
+
+<article class="step" id="s4">
+<h2><b>৪</b>Log price ব্যবহার</h2>
+<p class="one">দামের বিশাল পার্থক্য সামলানোর কৌশল।</p>
+<div class="row"><b>কী করবেন</b><div><p>সরাসরি price না নিয়ে log(price) শেখান।</p></div></div>
+<div class="row"><b>কেন</b><div><p>দাম ৳২ থেকে ৳৫,৯৯,০০০, median ৳১,৩৭১। কয়েকটা দামি laptop পুরো model-কে টেনে নেয়। Skewness raw-তে ৮.৭, log-এ ০.৪৯।</p></div></div>
+<div class="row"><b>কীভাবে</b><div><pre>y_log = np.log(df["price"])      # শেখানোর জন্য
+pred_taka = np.exp(pred_log)      # টাকায় ফেরানো</pre></div></div>
+<div class="row"><b>উদাহরণ</b><div class="ex">৳১,০০০ আর ৳১০০,০০০-এর পার্থক্য ১০০ গুণ; log-এ ৬.৯ আর ১১.৫, অনেক কাছাকাছি।</div></div>
+<div class="row"><b>ফল</b><div class="out">স্থিতিশীল training। থিসিসে skewness-এর সংখ্যা দিয়ে সিদ্ধান্ত প্রমাণ করুন।</div></div>
+</article>
+
+<article class="step" id="s5">
+<h2><b>৫</b>Feature তৈরি (Feature Engineering)</h2>
+<p class="one">raw column থেকে model-এর কাজে লাগা তথ্য বানানো। Model-এর মান এখান থেকেই আসে।</p>
+<div class="row"><b>কী করবেন</b><div class="tw"><table>
+<tr><th>Feature</th><th>কোথা থেকে</th></tr>
+<tr><td>Platform</td><td>URL-এ pickaboo বা daraz আছে কি না</td></tr>
+<tr><td>Category</td><td>নামে keyword: laptop, earphone, charger...</td></tr>
+<tr><td>Brand</td><td>brand column, বিরল brand "Other"</td></tr>
+<tr><td>Warranty</td><td>"18 Months..." থেকে ১৮ মাস</td></tr>
+<tr><td>Description length</td><td>description-এর অক্ষর সংখ্যা</td></tr>
+<tr><td>Specs</td><td>regex দিয়ে GB, RAM, mAh, watt, inch</td></tr>
+</table></div></div>
+<div class="row"><b>কেন</b><div><p>কাঁচা নামের লেখা model বোঝে না, কিন্তু category = laptop বোঝে।</p></div></div>
+<div class="row"><b>কীভাবে</b><div><pre>df["platform"] = np.where(df.product_url.str.contains("pickaboo"),
+                          "Pickaboo", "Daraz")
+df["dlen"] = df.product_description.fillna("").str.len()
+df["ram_gb"] = df.product_name.str.extract(r"(\d+)\s*GB", expand=False)</pre></div></div>
+<div class="row"><b>সাবধান</b><div><div class="warn">Daraz-এ ৯২% "No Brand" ও warranty আসলে অজানা। Rating ৬০% ফাঁকা, তাই মূল feature নয়। Category rule-এ ১,৩৩৫টি "other" থেকে যায়, rule উন্নত করুন।</div></div></div>
+<div class="row"><b>ফল</b><div class="out">প্রতি পণ্যের জন্য একটি পরিষ্কার feature সারি।</div></div>
+</article>
+
+<article class="step" id="s6">
+<h2><b>৬</b>ডেটা ভাগ (Train/Test Split)</h2>
+<p class="one">Model-কে পরীক্ষা করার জন্য কিছু ডেটা আলাদা রাখা।</p>
+<div class="row"><b>কী করবেন</b><div><p>৮০% train, ২০% test। Categorical column (brand, category) সংখ্যায় বদলান।</p></div></div>
+<div class="row"><b>কেন</b><div><p>যে ডেটা দিয়ে শিখেছে সেটা দিয়ে পরীক্ষা করলে ভালো ফল দেখাবেই, মিথ্যে। একই পণ্য train ও test দুটোতে গেলেও একই সমস্যা।</p></div></div>
+<div class="row"><b>কীভাবে</b><div><pre>from sklearn.model_selection import GroupShuffleSplit
+gss = GroupShuffleSplit(test_size=0.2, random_state=0)
+tr, te = next(gss.split(X, y_log, groups=df.product_name))</pre></div></div>
+<div class="row"><b>ফল</b><div class="out">train ও test আলাদা। এর উপর cross-validation চালান।</div></div>
+</article>
+
+<article class="step" id="s7">
+<h2><b>৭</b>তিনটি Model train</h2>
+<p class="one">সহজ থেকে জটিল: তিন ধরনের model তুলনা।</p>
+<div class="row"><b>কী করবেন</b><div class="tw"><table>
+<tr><th>Model</th><th>কাজ</th></tr>
+<tr><td>Linear Regression</td><td>সহজ সরল সম্পর্ক, baseline</td></tr>
+<tr><td>Random Forest</td><td>অনেক decision tree-র গড়</td></tr>
+<tr><td>XGBoost</td><td>ভুল শুধরে শুধরে শেখা, জটিল সম্পর্ক</td></tr>
+</table></div></div>
+<div class="row"><b>কেন</b><div><p>সরল model যদি প্রায় একই ফল দেয়, জটিলটার দরকার কম। তুলনা না করে সেরা model বলা যায় না।</p></div></div>
+<div class="row"><b>কীভাবে</b><div><pre>models = {"LR": LinearRegression(),
+          "RF": RandomForestRegressor(300, random_state=0),
+          "XGB": XGBRegressor(n_estimators=400, learning_rate=0.05)}
+for name, m in models.items(): m.fit(X.iloc[tr], y_log.iloc[tr])</pre></div></div>
+<div class="row"><b>উদাহরণ</b><div class="ex">দ্রুত baseline: Ridge R² ০.৬১, Random Forest R² ০.৭১। XGBoost এখনো চালানো হয়নি।</div></div>
+<div class="row"><b>ফল</b><div class="out">তিনটি trained model।</div></div>
+</article>
+
+<article class="step" id="s8">
+<h2><b>৮</b>Model মূল্যায়ন</h2>
+<p class="one">কোন model সবচেয়ে ভালো, সংখ্যা দিয়ে দেখানো।</p>
+<div class="row"><b>কী করবেন</b><div class="tw"><table>
+<tr><th>Metric</th><th>মানে</th></tr>
+<tr><td>MAE</td><td>গড়ে কত টাকা ভুল</td></tr>
+<tr><td>RMSE</td><td>বড় ভুলকে বেশি গুরুত্ব</td></tr>
+<tr><td>R²</td><td>দামের variation কতটা ব্যাখ্যা করে</td></tr>
+</table></div></div>
+<div class="row"><b>কেন</b><div><p>Laptop-এর দাম লাখে, তাই টাকার MAE শুধু laptop দিয়ে প্রভাবিত হয়। তাই log scale ও টাকা দুটোই এবং category-wise দেখান।</p></div></div>
+<div class="row"><b>কীভাবে</b><div><pre>p = m.predict(X.iloc[te])
+mae = mean_absolute_error(np.exp(y_log.iloc[te]), np.exp(p))
+r2  = r2_score(y_log.iloc[te], p)</pre></div></div>
+<div class="row"><b>উদাহরণ</b><div class="ex">Actual ৳৩০,০০০, predicted ৳২৮,০০০ হলে error ৳২,০০০।</div></div>
+<div class="row"><b>ফল</b><div class="out">তুলনার টেবিল ও সেরা model নির্বাচন।</div></div>
+</article>
+
+<article class="step" id="s9">
+<h2><b>৯</b>SHAP ব্যাখ্যা ও Limitations</h2>
+<p class="one">থিসিসের "Explainable" অংশ, মূল novelty।</p>
+<div class="row"><b>কী করবেন</b><div><ul>
+<li>Summary plot: কোন feature সামগ্রিকভাবে সবচেয়ে গুরুত্বপূর্ণ।</li>
+<li>Dependence plot: একটা feature বদলালে দাম কেমন বদলায়।</li>
+<li>Waterfall plot: ৩-৪টি পণ্যের জন্য আলাদা ব্যাখ্যা।</li></ul></div></div>
+<div class="row"><b>কেন</b><div><p>শুধু "দাম ৳৩৫,০০০" যথেষ্ট নয়; কেন ৩৫,০০০ তা বলাই আপনার থিসিসকে আলাদা করে।</p></div></div>
+<div class="row"><b>কীভাবে</b><div><pre>import shap
+ex = shap.TreeExplainer(best_model)
+sv = ex(X.iloc[te])
+shap.summary_plot(sv, X.iloc[te])
+shap.plots.waterfall(sv[0])</pre></div></div>
+<div class="row"><b>সাবধান</b><div><div class="warn">Brand ও platform মিশে আছে (Daraz = No Brand)। SHAP-এর ফল পড়ার সময় এটা মনে রাখুন। ক্রম আগে থেকে ধরে নেবেন না, ফল থেকে বের করুন।</div></div></div>
+<div class="row"><b>Limitations</b><div><ul>
+<li>এগুলো listing price, আসল বিক্রির দাম নয়।</li>
+<li>ডেটা একটি snapshot।</li>
+<li>Daraz-এ brand ও warranty অনুপস্থিত, তাই platform তুলনা পুরো ন্যায্য নয়।</li>
+<li>ডেটায় বেশিরভাগ accessories, তাই scope "consumer electronics, accessories ও devices"।</li></ul></div></div>
+<div class="row"><b>ফল</b><div class="out">Predicted দাম + কোন feature কতটা প্রভাব ফেলেছে, দুটোই।</div></div>
+</article>
+
+<section class="end" id="end">
+<h2>শেষে থিসিসে যা থাকবে</h2>
+<ul>
+<li>Cleaned dataset ও reusable cleaning script</li>
+<li>তিন model-এর তুলনার টেবিল (MAE, RMSE, R²)</li>
+<li>SHAP summary, dependence ও waterfall plot</li>
+<li>Leakage ও log price সিদ্ধান্তের যুক্তি</li>
+<li>Limitations অংশ</li>
+</ul>
+</section>
+</main></template>
+<script>
+(function(){
+var page=document.getElementById("page"),tpl=document.getElementById("tpl-bn"),root=document.documentElement;
+var H={en:page.innerHTML,bn:tpl.innerHTML};
+var T={
+ en:{t:"The Full Thesis Process, Step by Step",short:"Thesis process",sub:"From raw.csv to SHAP",menu:"Open menu",
+     top:"Overview",g1:"The 9 steps",g2:"Summary",end:"What the thesis will contain",
+     nums:["1","2","3","4","5","6","7","8","9"],
+     steps:["Inspect the data","Clean the data","Target and leakage","Use log price","Create features","Split the data","Train three models","Evaluate the models","SHAP and limitations"]},
+ bn:{t:"থিসিসের পুরো প্রক্রিয়া: ভেঙে ভেঙে",short:"থিসিস প্রক্রিয়া",sub:"raw.csv থেকে SHAP পর্যন্ত",menu:"মেনু খুলুন",
+     top:"সূচনা",g1:"৯টি ধাপ",g2:"সারসংক্ষেপ",end:"শেষে থিসিসে যা থাকবে",
+     nums:["১","২","৩","৪","৫","৬","৭","৮","৯"],
+     steps:["ডেটা দেখা","ডেটা পরিষ্কার","Target ও leakage","Log price ব্যবহার","Feature তৈরি","ডেটা ভাগ","তিনটি Model train","Model মূল্যায়ন","SHAP ও Limitations"]}
+};
+var ids=["top","s1","s2","s3","s4","s5","s6","s7","s8","s9","end"];
+var lang="en",current="top",side=document.getElementById("side"),nav=document.getElementById("nav");
+try{var v=localStorage.getItem("process-lang");if(v==="bn"||v==="en")lang=v}catch(e){}
+
+function buildNav(l){
+  var x=T[l],h='<a href="#top" data-id="top"><span class="n">◎</span><span>'+x.top+'</span></a><div class="grp">'+x.g1+'</div>';
+  for(var i=0;i<9;i++)h+='<a href="#s'+(i+1)+'" data-id="s'+(i+1)+'"><span class="n">'+x.nums[i]+'</span><span>'+x.steps[i]+'</span></a>';
+  h+='<div class="grp">'+x.g2+'</div><a href="#end" data-id="end"><span class="n">✓</span><span>'+x.end+'</span></a>';
+  nav.innerHTML=h;
+}
+
+/* menu (mobile) */
+function setMenu(o){document.body.classList.toggle("open",o);document.getElementById("menuBtn").setAttribute("aria-expanded",o)}
+document.getElementById("menuBtn").addEventListener("click",function(){setMenu(!document.body.classList.contains("open"))});
+document.getElementById("scrim").addEventListener("click",function(){setMenu(false)});
+nav.addEventListener("click",function(e){if(e.target.closest("a"))setMenu(false)});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")setMenu(false)});
+
+/* scrollspy + progress */
+function spy(){
+  var y=window.scrollY+130,cur="top",idx=0;
+  ids.forEach(function(id,i){var el=document.getElementById(id);if(el&&el.getBoundingClientRect().top+window.scrollY<=y){cur=id;idx=i}});
+  if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-4){cur="end";idx=ids.length-1}
+  current=cur;
+  var links=nav.querySelectorAll("a"),act=null;
+  links.forEach(function(a){
+    var id=a.dataset.id,i=ids.indexOf(id);
+    a.classList.toggle("active",id===cur);
+    a.classList.toggle("done",i>0&&i<idx&&id!=="end");
+    if(id===cur)act=a;
+  });
+  document.getElementById("sprog").style.width=(idx/(ids.length-1)*100)+"%";
+  if(act&&window.innerWidth>960){
+    var r=act.getBoundingClientRect(),sr=side.getBoundingClientRect();
+    if(r.top<sr.top+160||r.bottom>sr.bottom-90)side.scrollTop+=r.top-sr.top-sr.height/2;
+  }
+}
+window.addEventListener("scroll",spy,{passive:true});window.addEventListener("resize",spy);
+
+/* language */
+function apply(l,keep){
+  var anchor=keep?current:null;
+  lang=l;page.innerHTML=H[l];root.lang=l;document.title=T[l].t;
+  document.getElementById("sTitle").textContent=T[l].t;
+  document.getElementById("sSub").textContent=T[l].sub;
+  document.getElementById("tTitle").textContent=T[l].short;
+  document.getElementById("menuBtn").setAttribute("aria-label",T[l].menu);
+  document.querySelectorAll("[data-setlang]").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.setlang===l)});
+  buildNav(l);
+  try{localStorage.setItem("process-lang",l)}catch(e){}
+  if(anchor){
+    var el=document.getElementById(anchor);
+    if(el){var p=root.style.scrollBehavior;root.style.scrollBehavior="auto";window.scrollTo(0,el.getBoundingClientRect().top+window.scrollY-(window.innerWidth>960?14:70));root.style.scrollBehavior=p}
+  }
+  spy();
+}
+document.querySelectorAll("[data-setlang]").forEach(function(b){
+  b.addEventListener("click",function(){if(b.dataset.setlang!==lang)apply(b.dataset.setlang,true)});
+});
+apply(lang,false);
+})();
+</script>
+</body>
+</html>
