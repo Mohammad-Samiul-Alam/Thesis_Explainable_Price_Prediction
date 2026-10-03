@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Explainable Price Prediction of Consumer Electronics in Bangladeshi E-Commerce</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Hind+Siliguri:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F2F5F2;--paper:#FFFFFF;--ink:#13201A;--mute:#55655C;--green:#0C4A36;--red:#D8402F;--gold:#E9AE2B;--line:#D3DCD5;--up:#0C7A55;--down:#D8402F}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0D1612;--paper:#15221B;--ink:#E9F0EA;--mute:#9DB0A4;--green:#6FD3A6;--red:#FF7A68;--gold:#F2C14E;--line:#27382E;--up:#5FD6A2;--down:#FF7A68}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.65 "Source Serif 4",Georgia,serif}
+h1,h2,h3,.sans{font-family:"Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,system-ui,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+header{padding:72px 0 48px;border-bottom:1px solid var(--line)}
+.sun{width:14px;height:14px;border-radius:50%;background:var(--red);display:inline-block;margin-right:10px;vertical-align:middle}
+.tag{font:600 15px "Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,sans-serif;color:var(--mute)}
+h1{font-size:clamp(34px,6vw,68px);line-height:1.04;font-weight:800;letter-spacing:-.025em;margin:20px 0 20px;max-width:15em}
+.lede{font-size:21px;max-width:36em;color:var(--mute);margin:0}
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center}
+@media(max-width:820px){.hero{grid-template-columns:1fr}}
+.wf{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px}
+.wf h3{margin:0 0 4px;font-size:18px}
+.wf small{color:var(--mute);display:block;margin-bottom:16px;font-size:14px;line-height:1.4}
+.row{display:grid;grid-template-columns:118px 1fr 74px;gap:10px;align-items:center;padding:7px 0;cursor:pointer;font:500 14px "Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,sans-serif;border:0;background:none;color:inherit;width:100%;text-align:left}
+.row:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.track{position:relative;height:18px;background:color-mix(in srgb,var(--line) 45%,transparent);border-radius:3px}
+.bar{position:absolute;top:0;bottom:0;border-radius:3px;transition:filter .2s}
+.row:hover .bar,.row.on .bar{filter:brightness(1.2) saturate(1.2)}
+.row.on{font-weight:800}
+.val{text-align:right;font-variant-numeric:tabular-nums}
+.note{margin-top:14px;min-height:3.2em;font-size:15px;color:var(--mute);border-top:1px dashed var(--line);padding-top:12px}
+section{padding:64px 0;border-bottom:1px solid var(--line)}
+h2{font-size:clamp(26px,4vw,38px);letter-spacing:-.02em;margin:0 0 14px;line-height:1.1}
+p{margin:0 0 14px;max-width:40em}
+.spread{display:flex;gap:12px;flex-wrap:wrap;margin:22px 0}
+.price{background:var(--paper);border:1px solid var(--line);border-left:5px solid var(--gold);padding:10px 16px;border-radius:6px;font:600 17px "Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,sans-serif}
+.price span{display:block;font-weight:400;font-size:13px;color:var(--mute)}
+.q{font:600 22px/1.3 "Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,sans-serif;max-width:26em;margin-top:22px}
+table{border-collapse:collapse;width:100%;max-width:640px;background:var(--paper);font-size:16px}
+th,td{padding:9px 14px;border:1px solid var(--line);text-align:left}
+th{font-family:"Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,sans-serif;font-size:14px;background:color-mix(in srgb,var(--green) 10%,var(--paper))}
+.tw{overflow-x:auto}
+tr.target td{background:color-mix(in srgb,var(--gold) 28%,var(--paper));font-weight:600}
+.flow{list-style:none;padding:0;margin:26px 0 0;display:grid;gap:0;counter-reset:s}
+.flow li{counter-increment:s;display:grid;grid-template-columns:44px 1fr;gap:14px;padding-bottom:26px;position:relative}
+.flow li::before{content:counter(s);width:34px;height:34px;border-radius:50%;background:var(--green);color:var(--bg);display:grid;place-items:center;font:700 16px "Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,sans-serif;z-index:1}
+.flow li:not(:last-child)::after{content:"";position:absolute;left:16px;top:34px;bottom:0;width:2px;background:var(--line)}
+.flow h3{margin:2px 0 4px;font-size:20px}
+.flow p{margin:0;color:var(--mute);font-size:17px}
+code{font:15px ui-monospace,Menlo,monospace;background:color-mix(in srgb,var(--green) 12%,transparent);padding:1px 6px;border-radius:4px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;margin-top:24px}
+.col{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:20px}
+.col h3{margin:0 0 6px;font-size:20px}
+.col p{font-size:16px;color:var(--mute);margin:0}
+.col.xgb{border-top:5px solid var(--red)}
+.col.rf{border-top:5px solid var(--gold)}
+.col.lr{border-top:5px solid var(--green)}
+.gap{background:var(--green);color:var(--bg);border-radius:14px;padding:34px;margin-top:20px}
+.gap p{max-width:38em}
+.eq{font:700 clamp(18px,3vw,26px)/1.3 "Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,sans-serif;margin-top:16px}
+.out{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px;margin-top:22px}
+.out h3{font-size:18px;margin:0 0 4px}
+.out p{font-size:16px;color:var(--mute)}
+.viva{border-left:5px solid var(--red);padding:6px 0 6px 22px;font-size:20px;max-width:34em}
+.recap{display:grid;grid-template-columns:110px 1fr;gap:6px 18px;margin-top:30px;font-size:16px}
+.recap b{font-family:"Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,sans-serif}
+footer{padding:36px 0 60px;color:var(--mute);font-size:15px}
+section:last-of-type{border:0}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+.wide{max-width:none;font-size:14px}.wide th,.wide td{padding:7px 10px}
+.risk{background:var(--paper);border:1px solid var(--line);border-left:6px solid var(--red);border-radius:10px;padding:20px 24px;margin:24px 0}
+.risk p{margin:0 0 8px}.risk p:last-child{margin:0}
+.note2{background:var(--paper);border:1px solid var(--line);border-left:6px solid var(--gold);border-radius:10px;padding:16px 22px;margin:20px 0}
+.issues{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:20px 0;padding:0;list-style:none}
+.issues li{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:12px 16px;font-size:16px;line-height:1.5}
+.issues b{font-family:"Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,sans-serif;display:block}
+h3.sm{font-size:19px;margin:30px 0 8px}
+tr.drop td{color:var(--mute)}
+.menu-btn{position:fixed;z-index:30;top:calc(12px + env(safe-area-inset-top,0px));left:12px;display:flex;gap:8px;align-items:center;background:var(--green);color:var(--bg);border:0;border-radius:999px;padding:10px 16px;font:600 15px "Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,sans-serif;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.menu-btn:focus-visible,.drawer a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.menu-btn svg{width:18px;height:18px}
+.scrim{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.45);opacity:0;visibility:hidden;transition:opacity .25s}
+.drawer{position:fixed;z-index:50;top:0;bottom:0;left:0;width:min(300px,84vw);background:var(--paper);border-right:1px solid var(--line);transform:translateX(-100%);transition:transform .25s;padding:calc(18px + env(safe-area-inset-top,0px)) 0 calc(18px + env(safe-area-inset-bottom,0px));overflow-y:auto;visibility:hidden}
+body.nav-open .drawer{transform:none;visibility:visible}
+body.nav-open .scrim{opacity:1;visibility:visible}
+.drawer h4{margin:0;padding:6px 22px 12px;font:800 17px "Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,sans-serif;display:flex;justify-content:space-between;align-items:center}
+.drawer h4 button{background:none;border:0;color:var(--ink);font-size:26px;line-height:1;cursor:pointer}
+.drawer a{display:block;padding:10px 22px;color:var(--ink);text-decoration:none;font:500 16px "Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,sans-serif;border-left:4px solid transparent}
+.drawer a:hover{background:color-mix(in srgb,var(--green) 10%,transparent)}
+.drawer a.active{border-left-color:var(--red);font-weight:700;background:color-mix(in srgb,var(--gold) 20%,transparent)}
+section,header{scroll-margin-top:12px}
+.abs{border-bottom:1px solid var(--line);padding:44px 0}
+.abs h2{margin-bottom:12px}
+.abs p{max-width:44em;font-size:19px}
+.abs ul{margin:10px 0 0;padding-left:22px;max-width:44em;font-size:17px;color:var(--mute)}
+.abs li{margin-bottom:4px}
+.io{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:stretch;margin-top:26px}
+@media(max-width:760px){.io{grid-template-columns:1fr}.io .arrow{transform:rotate(90deg);justify-self:center}}
+.io .box{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+.io .box h3{margin:0 0 10px;font-size:18px}
+.io .in{border-top:5px solid var(--green)}.io .out{border-top:5px solid var(--gold)}
+.io .arrow{align-self:center;font:800 15px "Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,sans-serif;text-align:center;color:var(--mute)}
+.io .arrow b{display:block;font-size:30px;color:var(--red);line-height:1}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.chips li{background:color-mix(in srgb,var(--green) 12%,transparent);border-radius:999px;padding:3px 12px;font:500 15px "Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,sans-serif}
+.io .out .big{font:800 26px/1.2 "Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,sans-serif;margin:0 0 6px}
+.io small{display:block;color:var(--mute);font-size:14px;line-height:1.5;margin-top:10px}
+.abs .chips{padding-left:0;margin:0;max-width:none;font-size:inherit;color:var(--ink)}.abs .chips li{margin:0}
+html[lang=bn] body{font-family:"Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,SolaimanLipi,sans-serif;line-height:1.8}
+html[lang=bn] h1,html[lang=bn] h2,html[lang=bn] h3,html[lang=bn] h4{letter-spacing:0!important;line-height:1.4!important}
+.lang-btn{position:fixed;z-index:30;top:calc(12px + env(safe-area-inset-top,0px));right:12px;background:var(--paper);color:var(--ink);border:2px solid var(--green);border-radius:999px;padding:8px 16px;font:700 15px "Bricolage Grotesque","Hind Siliguri","Nirmala UI","Noto Sans Bengali",Kalpurush,sans-serif;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.lang-btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+</style>
+</head>
+<body>
+<div id="page"><header id="top">
+<div class="wrap hero">
+<div>
+<div class="tag"><i class="sun"></i>Thesis overview &middot; updated with raw.csv analysis</div>
+<h1>Explainable Price Prediction of Consumer Electronics in Bangladeshi E-Commerce</h1>
+<p class="lede">Predict what an electronics product should cost on Daraz and Pickaboo, and show exactly which features pushed the price up or down.</p>
+</div>
+<div class="wf" aria-label="Illustrative SHAP breakdown">
+<h3>Why does the model say &#2547;35,000?</h3>
+<small>Illustrative example: a Samsung smartphone. Tap a row to see its effect.</small>
+<div id="wf"></div>
+<div class="note" id="note" aria-live="polite">Start from the average price, then add each feature's push.</div>
+</div>
+</div>
+</header>
+
+<main>
+<section id="abstract" class="abs"><div class="wrap">
+<h2>Abstract</h2>
+<p>Online prices for the same kind of electronics differ widely across sellers, platforms, discounts and warranties, so buyers cannot easily tell whether a price is reasonable. This thesis predicts the price of consumer electronics listed on Daraz and Pickaboo from product information such as brand, category, platform, warranty and description. It compares Linear Regression, Random Forest and XGBoost, then uses SHAP to explain which features pushed each predicted price up or down.</p>
+<ul>
+<li><b>Data:</b> 6,504 scraped listings, about 5,958 usable after cleaning.</li>
+<li><b>Task:</b> regression on log(price), judged by MAE, RMSE and R&sup2;.</li>
+<li><b>Contribution:</b> explainable price prediction for Bangladeshi e-commerce, plus a reusable cleaning pipeline.</li>
+</ul>
+<div class="io">
+<div class="box in"><h3>Inputs</h3>
+<ul class="chips"><li>Platform</li><li>Brand</li><li>Category</li><li>Warranty</li><li>Description length</li><li>Availability</li><li>Specs (GB, RAM, mAh&hellip;)</li><li>Rating (weak)</li></ul>
+<small>Not used: listed price and discount percent, because they leak the answer.</small></div>
+<div class="arrow"><b>&rarr;</b>ML model<br>+ SHAP</div>
+<div class="box out"><h3>Output</h3>
+<p class="big">Price in taka</p>
+<small>The discounted price, or the listed price when there is no discount. SHAP also explains which inputs drove each predicted price.</small></div>
+</div>
+</div></section>
+
+<section id="problem"><div class="wrap">
+<h2>The problem: one product, many prices</h2>
+<p>The same Samsung phone can sit at very different prices depending on the seller, the platform, the discount and the warranty.</p>
+<div class="spread">
+<div class="price">&#2547;25,000<span>Seller A</span></div>
+<div class="price">&#2547;27,000<span>Seller B</span></div>
+<div class="price">&#2547;29,000<span>Another platform</span></div>
+<div class="price">10% vs 25%<span>Discount varies</span></div>
+<div class="price">Warranty or none<span>Terms differ</span></div>
+</div>
+<p class="q">Buyers ask: is this price reasonable? Sellers ask: what price keeps me competitive?</p>
+<p>This thesis answers both with data and machine learning.</p>
+</div></section>
+
+<section id="data"><div class="wrap">
+<h2>The data: what raw.csv actually contains</h2>
+<p>The file has 6,504 rows and 13 columns, collected from two platforms. After cleaning, about 5,958 rows are usable. The thesis should report both numbers instead of "about 6,500".</p>
+<div class="spread">
+<div class="price">6,504<span>raw rows</span></div>
+<div class="price">4,536 / 1,959<span>Pickaboo / Daraz</span></div>
+<div class="price">9<span>broken rows</span></div>
+<div class="price">506<span>rows with no price</span></div>
+<div class="price">5,958<span>usable after cleaning</span></div>
+</div>
+<h3 class="sm">Before cleaning: raw rows</h3>
+<div class="tw"><table class="wide">
+<tr><th>product_name</th><th>platform_name</th><th>brand</th><th>listed_price</th><th>discount_percent</th><th>discounted_price</th><th>warranty_info</th><th>average_rating</th><th>rating_count</th></tr>
+<tr><td>Qbits Sigma 15 Laptop 10th Gen Intel&reg; &hellip;</td><td>pickaboo</td><td>Qbits</td><td>&#2547;72,990.0</td><td>-9%</td><td>&#2547;66,499.0</td><td>2 Years Official Warranty</td><td>5</td><td>2</td></tr>
+<tr><td>Anker Soundcore R50i NC TWS Earbuds</td><td>pickaboo</td><td>Anker</td><td>&#2547; 3,390</td><td>-10%</td><td>&#2547; 3,049</td><td>18 Months Official Warranty</td><td>4</td><td>1</td></tr>
+<tr><td>12V 2A Chargers Normal Quality AC 220V &hellip;</td><td><i>empty</i></td><td>No Brand</td><td>&#2547; 177</td><td>0%</td><td>&#2547; 177</td><td>Return &amp; Warranty</td><td>3.9</td><td>109</td></tr>
+<tr><td>ZGB G21 Keyboard Wired USB Gaming Mouse &hellip;</td><td><i>empty</i></td><td>No Brand</td><td>&#2547; 1,200</td><td>-39%</td><td>&#2547; 735</td><td>Return &amp; Warranty</td><td>4.2</td><td>9</td></tr>
+</table></div>
+<h3 class="sm">After cleaning: model inputs and output</h3>
+<div class="tw"><table class="wide">
+<tr><th>Product</th><th>Platform (from URL)</th><th>Brand</th><th>Category (from name)</th><th>Warranty (months)</th><th>Rating</th><th>Description length</th><th>Output: price (&#2547;)</th></tr>
+<tr><td>Qbits Sigma 15 Laptop</td><td>Pickaboo</td><td>Qbits</td><td>Laptop</td><td>24</td><td>5.0</td><td>873</td><td><b>66499</b></td></tr>
+<tr><td>Anker Soundcore R50i NC TWS Earbuds</td><td>Pickaboo</td><td>Anker</td><td>Earphone</td><td>18</td><td>4.0</td><td>438</td><td><b>3049</b></td></tr>
+<tr><td>12V 2A Charger</td><td>Daraz</td><td>No Brand</td><td>Charger/Cable</td><td>unknown</td><td>3.9</td><td>216</td><td><b>177</b></td></tr>
+<tr><td>ZGB G21 Keyboard + Gaming Mouse</td><td>Daraz</td><td>No Brand</td><td>Keyboard/Mouse</td><td>unknown</td><td>4.2</td><td>626</td><td><b>735</b></td></tr>
+</table></div>
+<p>The output is the discounted price, or the listed price when there is no discount.</p>
+<h3 class="sm">Rows dropped during cleaning</h3>
+<div class="tw"><table class="wide">
+<tr><th>Raw row</th><th>What is wrong</th><th>Action</th></tr>
+<tr class="drop"><td>0: Hoco HB45 Card Reader</td><td>Both prices empty, rating 0</td><td>Drop (no price)</td></tr>
+<tr class="drop"><td>82: product_name = <code>22""</code></td><td>product_url holds review text, because a review broke the CSV</td><td>Drop (broken row)</td></tr>
+<tr class="drop"><td>52: product_url empty</td><td>product_name holds review text</td><td>Drop (broken row)</td></tr>
+</table></div>
+</div></section>
+
+<section id="findings"><div class="wrap">
+<h2>What the data revealed</h2>
+<ul class="issues">
+<li><b>Duplicates</b>31 duplicate URLs, mostly empty ghost rows, plus some repeated products.</li>
+<li><b>platform_name</b>Filled only for Pickaboo. Derive it from the URL.</li>
+<li><b>No category column</b>Build it from product names. A rough keyword rule left 1,335 rows as "other", so the rules need work.</li>
+<li><b>Brand overlaps platform</b>Daraz is 92% "No Brand", Pickaboo 0%. Read SHAP results for brand and platform with care.</li>
+<li><b>Warranty</b>Every Daraz row says only "Return &amp; Warranty", which is not real warranty information. Useful warranty data exists only on Pickaboo.</li>
+<li><b>Rating is weak</b>About 60% of products have no rating or a rating of 0, and rating_count and availability contain junk. Do not rely on rating as a main feature, and drop the reviews column.</li>
+<li><b>Price is very skewed</b>Range &#2547;2 to &#2547;5,99,000, median &#2547;1,371. Skewness is 8.7 on raw price and 0.49 on log price, so the log choice is backed by data.</li>
+</ul>
+<div class="risk">
+<h3 class="sm" style="margin-top:0">Biggest risk: data leakage</h3>
+<p>Listed price and discounted price correlate at 0.98. Using listed_price or discount_percent as inputs to predict the discounted price makes the model cheat and gives a fake R&sup2;.</p>
+<p><b>Target = final price</b> (discounted price, or listed price when there is no discount), with listed_price and discount_percent excluded from the inputs. The alternative: keep discount as a feature and make listed_price the target. Either way, justify the choice in the thesis.</p>
+</div>
+<div class="note2"><b>Dataset vs earlier notes.</b> The notes use a Samsung smartphone as the example, but the data is mostly accessories: about 1,156 earphones, 1,144 chargers and cables, 575 laptops, 489 keyboards and mice, and only 436 phones (rough counts). Describing the scope as "consumer electronics, accessories and devices" is safer than "smartphones" in the viva.</div>
+</div></section>
+
+<section id="io"><div class="wrap">
+<h2>Inputs and outputs</h2>
+<h3 class="sm">Output the model predicts</h3>
+<p>The price in taka: the discounted price, or the listed price when there is no discount. The model learns it as log(price) and the result is converted back with exp().</p>
+<h3 class="sm">Inputs the model uses</h3>
+<div class="tw"><table class="wide">
+<tr><th>Input</th><th>Where it comes from</th></tr>
+<tr><td>Platform</td><td>Pickaboo or Daraz, from the product URL</td></tr>
+<tr><td>Brand</td><td>Brand column, rare brands grouped as Other</td></tr>
+<tr><td>Category</td><td>Laptop, earphone, charger and so on, built from the product name</td></tr>
+<tr><td>Warranty</td><td>Duration in months and type (unknown for Daraz)</td></tr>
+<tr><td>Description length</td><td>Character count of the description</td></tr>
+<tr><td>Availability</td><td>In stock or out of stock</td></tr>
+<tr><td>Specs</td><td>GB, RAM, mAh, watt, inch pulled from name and description</td></tr>
+<tr><td>Rating</td><td>Weak input: about 60% of products have none</td></tr>
+</table></div>
+<div class="note2"><b>Not inputs:</b> listed_price and discount_percent (0.98 correlation with the output, so the model would cheat), rating_count and the reviews column (mostly junk).</div>
+<h3 class="sm">What you need to find and report</h3>
+<div class="tw"><table class="wide">
+<tr><th>Result</th><th>What it is</th><th>How to get it</th></tr>
+<tr><td><b>Predicted price</b></td><td>A taka price per product, e.g. &#2547;3,049 predicted vs actual</td><td>Model predicts log(price), convert back with exp()</td></tr>
+<tr><td><b>Model comparison</b></td><td>MAE, RMSE, R&sup2; for the three models, log scale and taka, plus category-wise</td><td>Evaluate each model on the test set</td></tr>
+<tr><td><b>Feature importance</b></td><td>Which inputs matter most for price</td><td>SHAP summary plot on the best model</td></tr>
+<tr><td><b>Per-product explanation</b></td><td>How much each feature pushed one price up or down</td><td>SHAP waterfall plots for 3-4 products</td></tr>
+<tr><td><b>Cleaned data and pipeline</b></td><td>About 5,958 usable rows and a reusable cleaning script</td><td>Output of cleaning and feature engineering</td></tr>
+</table></div>
+</div></section>
+
+<section id="process"><div class="wrap">
+<h2>The process, step by step</h2>
+<ol class="flow">
+<li><div><h3>Collect the data</h3><p>Start from raw.csv: 6,504 rows, 13 columns, from Pickaboo (4,536) and Daraz (1,959). Nine rows are already broken.</p></div></li>
+<li><div><h3>Clean the data</h3><p>Drop the 9 broken rows, the 506 rows with no price, and duplicate URLs and products. Turn <code>&#2547; 3,049</code> into <code>3049</code>. Drop the reviews column. Result: about 5,958 rows (Pickaboo 4,058, Daraz 1,900).</p></div></li>
+<li><div><h3>Engineer features</h3><p>Platform from the URL, category from the name, brand (rare brands grouped as Other), warranty months and type, description length, availability, and specs such as GB, RAM, mAh, watt and inch pulled out with regex.</p></div></li>
+<li><div><h3>Define the target, avoid leakage</h3><p>Target is the final price. Exclude listed_price and discount_percent from the inputs. Then take log(price).</p></div></li>
+<li><div><h3>Split the data</h3><p>80/20 train-test split with cross-validation. Duplicates of the same product stay on one side, so the test set is truly unseen.</p></div></li>
+<li><div><h3>Train three models</h3><p>Linear Regression, Random Forest and XGBoost, each with hyperparameter tuning.</p></div></li>
+<li><div><h3>Evaluate the models</h3><p>MAE, RMSE and R&sup2; on both log scale and in taka, with a category-wise breakdown. Laptop prices dominate the taka error.</p></div></li>
+<li><div><h3>Explain with SHAP</h3><p>TreeExplainer on the best tree model: a global summary plot, a few dependence plots and waterfall plots for 3-4 products. End with a Limitations section: these are listing prices, not transaction prices, and the data is one snapshot.</p></div></li>
+</ol>
+</div></section>
+
+<section id="models"><div class="wrap">
+<h2>Models and how they are judged</h2>
+<div class="cols">
+<div class="col lr"><h3>Linear Regression</h3><p>Finds simple, direct relationships. The baseline.</p></div>
+<div class="col rf"><h3>Random Forest</h3><p>Averages many decision trees to make a prediction.</p></div>
+<div class="col xgb"><h3>XGBoost</h3><p>Boosting-based model that can capture complex relationships.</p></div>
+</div>
+<div class="cols">
+<div class="col"><h3>MAE</h3><p>The average error in taka. Actual 30,000 and predicted 28,000 is an error of 2,000.</p></div>
+<div class="col"><h3>RMSE</h3><p>Like MAE but punishes large mistakes more heavily.</p></div>
+<div class="col"><h3>R&sup2;</h3><p>How much of the variation in price the model explains.</p></div>
+</div>
+</div></section>
+
+<section id="baseline"><div class="wrap">
+<h2>Early baseline</h2>
+<p>A quick sanity check, not a final result: brand, category, platform and description length, 80/20 split, log price.</p>
+<div class="tw"><table>
+<tr><th>Model</th><th>R&sup2; (log price)</th><th>MAE</th></tr>
+<tr><td>Ridge</td><td>0.61</td><td>~&#2547;5,700</td></tr>
+<tr><td>Random Forest</td><td>0.71</td><td>~&#2547;4,900</td></tr>
+</table></div>
+<p>Adding specifications (RAM, storage, battery, screen size) should help. XGBoost has not been run yet.</p>
+</div></section>
+
+<section id="gap"><div class="wrap">
+<h2>The research gap</h2>
+<div class="gap">
+<p>Much Bangladeshi e-commerce research focuses on customer reviews, sentiment or purchase behaviour. Price modelling for consumer electronics listings, and especially explainable price prediction, is explored far less. This thesis does not claim that no price prediction work exists.</p>
+<div class="eq">Bangladesh + e-commerce electronics + price prediction + explainable ML</div>
+</div>
+</div></section>
+
+<section id="outcomes"><div class="wrap">
+<h2>Expected outcomes</h2>
+<div class="out">
+<div><h3>A price model</h3><p>Predicts the price of electronics products.</p></div>
+<div><h3>Key price drivers</h3><p>Brand, category, platform, warranty and discount are candidates. SHAP and model analysis decide the ranking, not assumptions.</p></div>
+<div><h3>Explained predictions</h3><p>Each predicted price comes with the features that shaped it.</p></div>
+<div><h3>A reusable pipeline</h3><p>Future researchers can clean similar scraped e-commerce data with it.</p></div>
+</div>
+</div></section>
+
+<section id="viva"><div class="wrap">
+<h2>The thesis in one breath</h2>
+<p class="viva">I predict the price of consumer electronics on Daraz and Pickaboo using Linear Regression, Random Forest and XGBoost, then use SHAP to explain how each feature shaped the prediction. The work is not only price prediction but explainable price prediction.</p>
+<div class="recap">
+<b>What</b><span>Predict electronics prices</span>
+<b>Where</b><span>Bangladeshi e-commerce</span>
+<b>Data</b><span>Daraz + Pickaboo, 6,504 raw rows, 5,958 after cleaning</span>
+<b>How</b><span>Regression on log price</span>
+<b>Evaluate</b><span>MAE, RMSE, R&sup2;</span>
+<b>Explain</b><span>SHAP</span>
+<b>Goal</b><span>Transparent, understandable pricing analysis</span>
+</div>
+</div></section>
+</main>
+<footer><div class="wrap">Collect data, clean it, create features, train models, evaluate them, explain predictions.</div></footer></div>
+<template id="tpl-bn"><header id="top">
+<div class="wrap hero">
+<div>
+<div class="tag"><i class="sun"></i>থিসিস ওভারভিউ &middot; raw.csv বিশ্লেষণসহ</div>
+<h1>বাংলাদেশি ই-কমার্সে কনজিউমার ইলেকট্রনিক্সের ব্যাখ্যাযোগ্য দাম পূর্বাভাস</h1>
+<p class="lede">Daraz ও Pickaboo-তে একটি ইলেকট্রনিক্স পণ্যের দাম কত হওয়া উচিত তা predict করা, এবং কোন feature দাম বাড়িয়েছে বা কমিয়েছে তা স্পষ্টভাবে দেখানো।</p>
+</div>
+<div class="wf" aria-label="Illustrative SHAP breakdown">
+<h3>Model কেন &#2547;35,000 বলছে?</h3>
+<small>উদাহরণ (কাল্পনিক সংখ্যা): একটি Samsung স্মার্টফোন। প্রভাব দেখতে যেকোনো সারিতে ট্যাপ করুন।</small>
+<div id="wf"></div>
+<div class="note" id="note" aria-live="polite">গড় দাম থেকে শুরু করে প্রতিটি feature-এর প্রভাব যোগ হচ্ছে।</div>
+</div>
+</div>
+</header>
+
+<main>
+<section id="abstract" class="abs"><div class="wrap">
+<h2>সারসংক্ষেপ</h2>
+<p>একই ধরনের ইলেকট্রনিক্সের অনলাইন দাম বিক্রেতা, প্ল্যাটফর্ম, ডিসকাউন্ট ও ওয়ারেন্টি ভেদে অনেক আলাদা হয়, তাই ক্রেতা সহজে বুঝতে পারেন না দামটা ন্যায্য কি না। এই থিসিসে Daraz ও Pickaboo-র পণ্যের brand, category, platform, warranty ও description-এর মতো তথ্য থেকে দাম predict করা হয়েছে। Linear Regression, Random Forest ও XGBoost তুলনা করে SHAP দিয়ে ব্যাখ্যা করা হয়েছে কোন feature প্রতিটি predicted দাম বাড়িয়েছে বা কমিয়েছে।</p>
+<ul>
+<li><b>ডেটা:</b> ৬,৫০৪টি scraped listing, cleaning-এর পর ব্যবহারযোগ্য প্রায় ৫,৯৫৮টি।</li>
+<li><b>কাজ:</b> log(price)-এর উপর regression, মাপা হবে MAE, RMSE ও R&sup2; দিয়ে।</li>
+<li><b>অবদান:</b> বাংলাদেশি ই-কমার্সের জন্য ব্যাখ্যাযোগ্য দাম পূর্বাভাস এবং একটি reusable cleaning pipeline।</li>
+</ul>
+<div class="io">
+<div class="box in"><h3>Input</h3>
+<ul class="chips"><li>Platform</li><li>Brand</li><li>Category</li><li>Warranty</li><li>Description-এর দৈর্ঘ্য</li><li>Availability</li><li>Specs (GB, RAM, mAh&hellip;)</li><li>Rating (দুর্বল)</li></ul>
+<small>ব্যবহার হয় না: listed price ও discount percent, কারণ এগুলো উত্তর ফাঁস করে দেয়।</small></div>
+<div class="arrow"><b>&rarr;</b>ML model<br>+ SHAP</div>
+<div class="box out"><h3>Output</h3>
+<p class="big">টাকায় দাম</p>
+<small>Discounted price, ডিসকাউন্ট না থাকলে listed price। SHAP আরও দেখায় কোন input প্রতিটি predicted দামকে প্রভাবিত করেছে।</small></div>
+</div>
+</div></section>
+
+<section id="problem"><div class="wrap">
+<h2>সমস্যা: একই পণ্য, অনেক দাম</h2>
+<p>একই Samsung ফোনের দাম বিক্রেতা, প্ল্যাটফর্ম, ডিসকাউন্ট ও ওয়ারেন্টি অনুযায়ী অনেক আলাদা হতে পারে।</p>
+<div class="spread">
+<div class="price">&#2547;25,000<span>বিক্রেতা A</span></div>
+<div class="price">&#2547;27,000<span>বিক্রেতা B</span></div>
+<div class="price">&#2547;29,000<span>অন্য প্ল্যাটফর্ম</span></div>
+<div class="price">10% vs 25%<span>ডিসকাউন্ট আলাদা</span></div>
+<div class="price">ওয়ারেন্টি আছে বা নেই<span>শর্ত আলাদা</span></div>
+</div>
+<p class="q">ক্রেতার প্রশ্ন: এই দাম কি ন্যায্য? বিক্রেতার প্রশ্ন: কত দামে বিক্রি করলে আমি প্রতিযোগিতায় টিকব?</p>
+<p>এই থিসিস ডেটা ও machine learning দিয়ে দুটোরই উত্তর খোঁজে।</p>
+</div></section>
+
+<section id="data"><div class="wrap">
+<h2>ডেটা: raw.csv-তে আসলে কী আছে</h2>
+<p>ফাইলে ৬,৫০৪টি row ও ১৩টি column আছে, দুটি প্ল্যাটফর্ম থেকে সংগ্রহ করা। Cleaning-এর পর প্রায় ৫,৯৫৮টি row ব্যবহারযোগ্য। থিসিসে "প্রায় ৬,৫০০" না লিখে দুটি সংখ্যাই উল্লেখ করা উচিত।</p>
+<div class="spread">
+<div class="price">6,504<span>raw row</span></div>
+<div class="price">4,536 / 1,959<span>Pickaboo / Daraz</span></div>
+<div class="price">9<span>ভাঙা row</span></div>
+<div class="price">506<span>দাম নেই এমন row</span></div>
+<div class="price">5,958<span>cleaning-এর পর ব্যবহারযোগ্য</span></div>
+</div>
+<h3 class="sm">Cleaning-এর আগে: raw row</h3>
+<div class="tw"><table class="wide">
+<tr><th>product_name</th><th>platform_name</th><th>brand</th><th>listed_price</th><th>discount_percent</th><th>discounted_price</th><th>warranty_info</th><th>average_rating</th><th>rating_count</th></tr>
+<tr><td>Qbits Sigma 15 Laptop 10th Gen Intel&reg; &hellip;</td><td>pickaboo</td><td>Qbits</td><td>&#2547;72,990.0</td><td>-9%</td><td>&#2547;66,499.0</td><td>2 Years Official Warranty</td><td>5</td><td>2</td></tr>
+<tr><td>Anker Soundcore R50i NC TWS Earbuds</td><td>pickaboo</td><td>Anker</td><td>&#2547; 3,390</td><td>-10%</td><td>&#2547; 3,049</td><td>18 Months Official Warranty</td><td>4</td><td>1</td></tr>
+<tr><td>12V 2A Chargers Normal Quality AC 220V &hellip;</td><td><i>ফাঁকা</i></td><td>No Brand</td><td>&#2547; 177</td><td>0%</td><td>&#2547; 177</td><td>Return &amp; Warranty</td><td>3.9</td><td>109</td></tr>
+<tr><td>ZGB G21 Keyboard Wired USB Gaming Mouse &hellip;</td><td><i>ফাঁকা</i></td><td>No Brand</td><td>&#2547; 1,200</td><td>-39%</td><td>&#2547; 735</td><td>Return &amp; Warranty</td><td>4.2</td><td>9</td></tr>
+</table></div>
+<h3 class="sm">Cleaning-এর পরে: model-এর input ও output</h3>
+<div class="tw"><table class="wide">
+<tr><th>পণ্য</th><th>Platform (URL থেকে)</th><th>Brand</th><th>Category (নাম থেকে)</th><th>Warranty (মাস)</th><th>Rating</th><th>Description-এর দৈর্ঘ্য</th><th>Output: দাম (&#2547;)</th></tr>
+<tr><td>Qbits Sigma 15 Laptop</td><td>Pickaboo</td><td>Qbits</td><td>Laptop</td><td>24</td><td>5.0</td><td>873</td><td><b>66499</b></td></tr>
+<tr><td>Anker Soundcore R50i NC TWS Earbuds</td><td>Pickaboo</td><td>Anker</td><td>Earphone</td><td>18</td><td>4.0</td><td>438</td><td><b>3049</b></td></tr>
+<tr><td>12V 2A Charger</td><td>Daraz</td><td>No Brand</td><td>Charger/Cable</td><td>অজানা</td><td>3.9</td><td>216</td><td><b>177</b></td></tr>
+<tr><td>ZGB G21 Keyboard + Gaming Mouse</td><td>Daraz</td><td>No Brand</td><td>Keyboard/Mouse</td><td>অজানা</td><td>4.2</td><td>626</td><td><b>735</b></td></tr>
+</table></div>
+<p>Output হলো discounted price, ডিসকাউন্ট না থাকলে listed price।</p>
+<h3 class="sm">Cleaning-এ বাদ যাওয়া row</h3>
+<div class="tw"><table class="wide">
+<tr><th>Raw row</th><th>সমস্যা</th><th>পদক্ষেপ</th></tr>
+<tr class="drop"><td>0: Hoco HB45 Card Reader</td><td>দুটি দামই ফাঁকা, rating ০</td><td>Drop (দাম নেই)</td></tr>
+<tr class="drop"><td>82: product_name = <code>22""</code></td><td>product_url-এ review-এর টেক্সট ঢুকেছে, কারণ review CSV ভেঙে দিয়েছে</td><td>Drop (ভাঙা row)</td></tr>
+<tr class="drop"><td>52: product_url ফাঁকা</td><td>product_name-এ review-এর টেক্সট ঢুকেছে</td><td>Drop (ভাঙা row)</td></tr>
+</table></div>
+</div></section>
+
+<section id="findings"><div class="wrap">
+<h2>ডেটা থেকে যা বেরিয়ে এলো</h2>
+<ul class="issues">
+<li><b>Duplicate</b>৩১টি duplicate URL (বেশিরভাগ ফাঁকা "ভূতুড়ে" row) এবং কিছু একই পণ্য বারবার।</li>
+<li><b>platform_name</b>শুধু Pickaboo-র জন্য ভরা। URL থেকে বের করতে হবে।</li>
+<li><b>Category column নেই</b>পণ্যের নাম থেকে বানাতে হবে। রাফ keyword rule-এ ১,৩৩৫টি "other" থেকে গেছে, তাই rule উন্নত করতে হবে।</li>
+<li><b>Brand ও platform মিশে আছে</b>Daraz-এ ৯২% "No Brand", Pickaboo-তে ০%। Brand ও platform-এর SHAP ফল সাবধানে পড়তে হবে।</li>
+<li><b>Warranty</b>Daraz-এর প্রতিটি row-এ শুধু "Return &amp; Warranty" লেখা, যা আসল warranty তথ্য নয়। কাজের warranty তথ্য শুধু Pickaboo-তে আছে।</li>
+<li><b>Rating দুর্বল</b>প্রায় ৬০% পণ্যে rating নেই বা ০, আর rating_count ও availability-তে junk আছে। Rating-কে মূল feature ধরা যাবে না, reviews column বাদ দিন।</li>
+<li><b>দাম অনেক skewed</b>রেঞ্জ &#2547;২ থেকে &#2547;৫,৯৯,০০০, median &#2547;১,৩৭১। Skewness raw price-এ ৮.৭, log price-এ ০.৪৯, তাই log ব্যবহারের সিদ্ধান্ত ডেটা দিয়ে সমর্থিত।</li>
+</ul>
+<div class="risk">
+<h3 class="sm" style="margin-top:0">সবচেয়ে বড় ঝুঁকি: data leakage</h3>
+<p>Listed price ও discounted price-এর correlation ০.৯৮। Discounted price predict করতে listed_price বা discount_percent input দিলে model "cheat" করে এবং R&sup2; নকল ভালো আসে।</p>
+<p><b>Target = final price</b> (discounted price, না থাকলে listed price), আর listed_price ও discount_percent input থেকে বাদ। বিকল্প: discount-কে feature রেখে listed_price-কে target করা। যেটাই নিন, থিসিসে সিদ্ধান্তের যুক্তি লিখুন।</p>
+</div>
+<div class="note2"><b>ডেটাসেট ও আগের নোটের অমিল।</b> নোটে উদাহরণ Samsung স্মার্টফোন, কিন্তু ডেটায় বেশিরভাগই accessories: প্রায় ১,১৫৬টি earphone, ১,১৪৪টি charger/cable, ৫৭৫টি laptop, ৪৮৯টি keyboard/mouse, আর phone মাত্র ৪৩৬টি (রাফ হিসাব)। Viva-তে "smartphone" না বলে "consumer electronics, accessories ও devices" বলা নিরাপদ।</div>
+</div></section>
+
+<section id="io"><div class="wrap">
+<h2>Input ও Output</h2>
+<h3 class="sm">Model যা predict করে (Output)</h3>
+<p>টাকায় দাম: discounted price, ডিসকাউন্ট না থাকলে listed price। Model এটা log(price) হিসেবে শেখে এবং ফল exp() দিয়ে টাকায় ফিরিয়ে আনা হয়।</p>
+<h3 class="sm">Model যেসব Input ব্যবহার করে</h3>
+<div class="tw"><table class="wide">
+<tr><th>Input</th><th>কোথা থেকে আসে</th></tr>
+<tr><td>Platform</td><td>Pickaboo বা Daraz, পণ্যের URL থেকে</td></tr>
+<tr><td>Brand</td><td>Brand column, বিরল brand "Other"-এ জড়ো করা</td></tr>
+<tr><td>Category</td><td>Laptop, earphone, charger ইত্যাদি, পণ্যের নাম থেকে বানানো</td></tr>
+<tr><td>Warranty</td><td>মাসের হিসাবে সময়কাল ও ধরন (Daraz-এর জন্য অজানা)</td></tr>
+<tr><td>Description-এর দৈর্ঘ্য</td><td>Description-এর অক্ষর সংখ্যা</td></tr>
+<tr><td>Availability</td><td>In stock বা out of stock</td></tr>
+<tr><td>Specs</td><td>নাম ও description থেকে GB, RAM, mAh, watt, inch তুলে আনা</td></tr>
+<tr><td>Rating</td><td>দুর্বল input: প্রায় ৬০% পণ্যে নেই</td></tr>
+</table></div>
+<div class="note2"><b>Input নয়:</b> listed_price ও discount_percent (output-এর সাথে correlation ০.৯৮, তাই model cheat করবে), rating_count ও reviews column (বেশিরভাগ junk)।</div>
+<h3 class="sm">যা খুঁজে বের করে report করতে হবে</h3>
+<div class="tw"><table class="wide">
+<tr><th>ফলাফল</th><th>এটা কী</th><th>কীভাবে পাবেন</th></tr>
+<tr><td><b>Predicted দাম</b></td><td>প্রতিটি পণ্যের টাকার দাম, যেমন actual-এর বিপরীতে predicted &#2547;3,049</td><td>Model log(price) predict করে, exp() দিয়ে ফেরানো হয়</td></tr>
+<tr><td><b>Model তুলনা</b></td><td>তিন model-এর MAE, RMSE, R&sup2;, log scale ও টাকায়, সাথে category-wise</td><td>Test set-এ প্রতিটি model মূল্যায়ন</td></tr>
+<tr><td><b>Feature importance</b></td><td>দামের জন্য কোন input সবচেয়ে গুরুত্বপূর্ণ</td><td>সেরা model-এ SHAP summary plot</td></tr>
+<tr><td><b>পণ্যভিত্তিক ব্যাখ্যা</b></td><td>একটি দামকে প্রতিটি feature কতটা বাড়িয়েছে বা কমিয়েছে</td><td>৩-৪টি পণ্যের SHAP waterfall plot</td></tr>
+<tr><td><b>Cleaned ডেটা ও pipeline</b></td><td>প্রায় ৫,৯৫৮টি ব্যবহারযোগ্য row ও একটি reusable cleaning script</td><td>Cleaning ও feature engineering-এর ফল</td></tr>
+</table></div>
+</div></section>
+
+<section id="process"><div class="wrap">
+<h2>প্রক্রিয়া, ধাপে ধাপে</h2>
+<ol class="flow">
+<li><div><h3>ডেটা সংগ্রহ</h3><p>raw.csv দিয়ে শুরু: ৬,৫০৪টি row, ১৩টি column, Pickaboo (৪,৫৩৬) ও Daraz (১,৯৫৯) থেকে। ৯টি row আগে থেকেই ভাঙা।</p></div></li>
+<li><div><h3>ডেটা পরিষ্কার</h3><p>৯টি ভাঙা row, দাম-ছাড়া ৫০৬টি row এবং duplicate URL ও পণ্য বাদ দিন। <code>&#2547; 3,049</code>-কে <code>3049</code> বানান। reviews column বাদ দিন। ফল: প্রায় ৫,৯৫৮টি row (Pickaboo ৪,০৫৮, Daraz ১,৯০০)।</p></div></li>
+<li><div><h3>Feature তৈরি</h3><p>URL থেকে platform, নাম থেকে category, brand (বিরল brand "Other"), warranty-র মাস ও ধরন, description-এর দৈর্ঘ্য, availability, এবং regex দিয়ে GB, RAM, mAh, watt, inch-এর মতো specs।</p></div></li>
+<li><div><h3>Target ঠিক করা, leakage এড়ানো</h3><p>Target হলো final price। listed_price ও discount_percent input থেকে বাদ দিন। তারপর log(price) নিন।</p></div></li>
+<li><div><h3>ডেটা ভাগ</h3><p>৮০/২০ train-test split ও cross-validation। একই পণ্যের duplicate এক পাশেই থাকবে, যাতে test set সত্যিই অদেখা থাকে।</p></div></li>
+<li><div><h3>তিন model train</h3><p>Linear Regression, Random Forest ও XGBoost, প্রতিটিতে hyperparameter tuning সহ।</p></div></li>
+<li><div><h3>Model মূল্যায়ন</h3><p>MAE, RMSE ও R&sup2; log scale ও টাকা দুই মাপে, category-wise ভাগসহ। টাকার error-এ laptop-এর দামই বেশি প্রভাব ফেলে।</p></div></li>
+<li><div><h3>SHAP দিয়ে ব্যাখ্যা</h3><p>সেরা tree model-এ TreeExplainer: একটি global summary plot, কয়েকটি dependence plot এবং ৩-৪টি পণ্যের waterfall plot। শেষে Limitations অংশ: এগুলো listing price, transaction price নয়, আর ডেটা একটি snapshot।</p></div></li>
+</ol>
+</div></section>
+
+<section id="models"><div class="wrap">
+<h2>Model ও কীভাবে মাপা হবে</h2>
+<div class="cols">
+<div class="col lr"><h3>Linear Regression</h3><p>সহজ, সরাসরি সম্পর্ক খোঁজে। এটাই baseline।</p></div>
+<div class="col rf"><h3>Random Forest</h3><p>অনেকগুলো decision tree-র গড় নিয়ে predict করে।</p></div>
+<div class="col xgb"><h3>XGBoost</h3><p>Boosting-ভিত্তিক model, জটিল সম্পর্কও ধরতে পারে।</p></div>
+</div>
+<div class="cols">
+<div class="col"><h3>MAE</h3><p>টাকায় গড় ভুল। Actual ৩০,০০০ আর predicted ২৮,০০০ হলে error ২,০০০।</p></div>
+<div class="col"><h3>RMSE</h3><p>MAE-র মতোই, তবে বড় ভুলকে বেশি গুরুত্ব দেয়।</p></div>
+<div class="col"><h3>R&sup2;</h3><p>Model দামের variation-এর কতটা ব্যাখ্যা করতে পারছে।</p></div>
+</div>
+</div></section>
+
+<section id="baseline"><div class="wrap">
+<h2>প্রাথমিক baseline</h2>
+<p>দ্রুত sanity check, চূড়ান্ত ফল নয়: brand, category, platform ও description-এর দৈর্ঘ্য, ৮০/২০ split, log price।</p>
+<div class="tw"><table>
+<tr><th>Model</th><th>R&sup2; (log price)</th><th>MAE</th></tr>
+<tr><td>Ridge</td><td>0.61</td><td>~&#2547;5,700</td></tr>
+<tr><td>Random Forest</td><td>0.71</td><td>~&#2547;4,900</td></tr>
+</table></div>
+<p>Specification (RAM, storage, battery, screen size) যোগ করলে ফল ভালো হওয়ার কথা। XGBoost এখনো চালানো হয়নি।</p>
+</div></section>
+
+<section id="gap"><div class="wrap">
+<h2>গবেষণার ফাঁক</h2>
+<div class="gap">
+<p>বাংলাদেশি ই-কমার্স গবেষণার বড় অংশ customer review, sentiment বা কেনাকাটার আচরণ নিয়ে। কনজিউমার ইলেকট্রনিক্স listing-এর দাম modelling, বিশেষ করে ব্যাখ্যাযোগ্য দাম পূর্বাভাস, তুলনামূলক কম explored। এই থিসিস দাবি করে না যে দাম পূর্বাভাসের কাজ একেবারেই নেই।</p>
+<div class="eq">বাংলাদেশ + ই-কমার্স ইলেকট্রনিক্স + দাম পূর্বাভাস + explainable ML</div>
+</div>
+</div></section>
+
+<section id="outcomes"><div class="wrap">
+<h2>প্রত্যাশিত ফলাফল</h2>
+<div class="out">
+<div><h3>একটি দামের model</h3><p>ইলেকট্রনিক্স পণ্যের দাম predict করবে।</p></div>
+<div><h3>দামের মূল চালিকা শক্তি</h3><p>Brand, category, platform, warranty ও discount সম্ভাব্য। ক্রম ঠিক করবে SHAP ও model বিশ্লেষণ, অনুমান নয়।</p></div>
+<div><h3>ব্যাখ্যাসহ পূর্বাভাস</h3><p>প্রতিটি predicted দামের সাথে থাকবে কোন feature তা গড়েছে।</p></div>
+<div><h3>Reusable pipeline</h3><p>ভবিষ্যতের গবেষকরা একই ধরনের scraped ই-কমার্স ডেটা এটি দিয়ে পরিষ্কার করতে পারবেন।</p></div>
+</div>
+</div></section>
+
+<section id="viva"><div class="wrap">
+<h2>এক নিঃশ্বাসে থিসিস</h2>
+<p class="viva">আমি Daraz ও Pickaboo-র কনজিউমার ইলেকট্রনিক্সের দাম Linear Regression, Random Forest ও XGBoost দিয়ে predict করি, তারপর SHAP দিয়ে ব্যাখ্যা করি প্রতিটি feature পূর্বাভাসে কীভাবে ভূমিকা রেখেছে। কাজটি শুধু দাম পূর্বাভাস নয়, ব্যাখ্যাযোগ্য দাম পূর্বাভাস।</p>
+<div class="recap">
+<b>কী</b><span>ইলেকট্রনিক্সের দাম predict</span>
+<b>কোথায়</b><span>বাংলাদেশি ই-কমার্স</span>
+<b>ডেটা</b><span>Daraz + Pickaboo, ৬,৫০৪ raw row, cleaning-এর পর ৫,৯৫৮</span>
+<b>কীভাবে</b><span>log price-এর উপর regression</span>
+<b>মূল্যায়ন</b><span>MAE, RMSE, R&sup2;</span>
+<b>ব্যাখ্যা</b><span>SHAP</span>
+<b>লক্ষ্য</b><span>স্বচ্ছ, বোধগম্য দাম বিশ্লেষণ</span>
+</div>
+</div></section>
+</main>
+<footer><div class="wrap">ডেটা সংগ্রহ, পরিষ্কার, feature তৈরি, model train, মূল্যায়ন, তারপর পূর্বাভাসের ব্যাখ্যা।</div></footer></template>
+
+<button class="lang-btn" id="lb" type="button"></button>
+<button class="menu-btn" id="mb" aria-expanded="false" aria-controls="dr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span id="mbt">Menu</span></button>
+<div class="scrim" id="sc"></div>
+<nav class="drawer" id="dr"></nav>
+<script>
+(function(){
+var page=document.getElementById("page"),tpl=document.getElementById("tpl-bn");
+var H={en:page.innerHTML,bn:tpl.innerHTML};
+var L={
+en:{title:"Explainable Price Prediction of Consumer Electronics in Bangladeshi E-Commerce",menu:"Menu",contents:"Contents",top:"Overview",close:"Close menu",sections:"Sections",btn:"\u09AC\u09BE\u0982\u09B2\u09BE",btnl:"Read in Bangla",
+ avg:"Average price",avgn:"The average price in the dataset is the starting point.",pred:"Predicted",predn:"The sum of all pushes: \u09F335,000. Numbers here are illustrative, not results.",
+ items:[["Brand: Samsung",6500,"Samsung is a premium brand here, so it raises the price."],["Category: phone",4000,"Smartphones cost more than most other electronics."],["Warranty: 1 year",1200,"A warranty adds a modest amount."],["Rating: 4.5",800,"A good rating has a small effect."],["Discount: 10%",-1500,"The discount pulls the price down."]]},
+bn:{title:"\u09AC\u09BE\u0982\u09B2\u09BE\u09A6\u09C7\u09B6\u09BF \u0987-\u0995\u09AE\u09BE\u09B0\u09CD\u09B8\u09C7 \u0995\u09A8\u099C\u09BF\u0989\u09AE\u09BE\u09B0 \u0987\u09B2\u09C7\u0995\u099F\u09CD\u09B0\u09A8\u09BF\u0995\u09CD\u09B8\u09C7\u09B0 \u09AC\u09CD\u09AF\u09BE\u0996\u09CD\u09AF\u09BE\u09AF\u09CB\u0997\u09CD\u09AF \u09A6\u09BE\u09AE \u09AA\u09C2\u09B0\u09CD\u09AC\u09BE\u09AD\u09BE\u09B8",menu:"\u09AE\u09C7\u09A8\u09C1",contents:"\u09B8\u09C2\u099A\u09BF",top:"\u09B6\u09C1\u09B0\u09C1",close:"\u09AE\u09C7\u09A8\u09C1 \u09AC\u09A8\u09CD\u09A7 \u0995\u09B0\u09C1\u09A8",sections:"\u0985\u0982\u09B6\u09B8\u09AE\u09C2\u09B9",btn:"English",btnl:"\u0987\u0982\u09B0\u09C7\u099C\u09BF\u09A4\u09C7 \u09A6\u09C7\u0996\u09C1\u09A8",
+ avg:"\u0997\u09A1\u09BC \u09A6\u09BE\u09AE",avgn:"\u09A1\u09C7\u099F\u09BE\u09B8\u09C7\u099F\u09C7\u09B0 \u0997\u09A1\u09BC \u09A6\u09BE\u09AE \u09A5\u09C7\u0995\u09C7\u0987 \u09B6\u09C1\u09B0\u09C1\u0964",pred:"Predicted",predn:"\u09B8\u09AC \u09AA\u09CD\u09B0\u09AD\u09BE\u09AC\u09C7\u09B0 \u09AF\u09CB\u0997\u09AB\u09B2: \u09F335,000\u0964 \u098F\u0996\u09BE\u09A8\u0995\u09BE\u09B0 \u09B8\u0982\u0996\u09CD\u09AF\u09BE \u0989\u09A6\u09BE\u09B9\u09B0\u09A3, \u09AA\u09CD\u09B0\u0995\u09C3\u09A4 \u09AB\u09B2 \u09A8\u09AF\u09BC\u0964",
+ items:[["Brand: Samsung",6500,"Samsung \u098F\u0996\u09BE\u09A8\u09C7 premium brand, \u09A4\u09BE\u0987 \u09A6\u09BE\u09AE \u09AC\u09BE\u09A1\u09BC\u09BE\u09AF\u09BC\u0964"],["Category: phone",4000,"Smartphone \u0985\u09A8\u09CD\u09AF \u09AC\u09C7\u09B6\u09BF\u09B0\u09AD\u09BE\u0997 \u0987\u09B2\u09C7\u0995\u099F\u09CD\u09B0\u09A8\u09BF\u0995\u09CD\u09B8\u09C7\u09B0 \u099A\u09C7\u09AF\u09BC\u09C7 \u09A6\u09BE\u09AE\u09BF\u0964"],["Warranty: \u09E7 \u09AC\u099B\u09B0",1200,"Warranty \u09B8\u09BE\u09AE\u09BE\u09A8\u09CD\u09AF \u09A6\u09BE\u09AE \u09AC\u09BE\u09A1\u09BC\u09BE\u09AF\u09BC\u0964"],["Rating: 4.5",800,"\u09AD\u09BE\u09B2\u09CB rating-\u098F\u09B0 \u09AA\u09CD\u09B0\u09AD\u09BE\u09AC \u099B\u09CB\u099F\u0964"],["Discount: 10%",-1500,"\u09A1\u09BF\u09B8\u0995\u09BE\u0989\u09A8\u09CD\u099F \u09A6\u09BE\u09AE \u0995\u09AE\u09BE\u09AF\u09BC\u0964"]]}};
+var lang="en",d=document.getElementById("dr"),b=document.getElementById("mb"),lb=document.getElementById("lb"),links=[],io=null;
+try{var sv=localStorage.getItem("thesis-lang");if(sv==="bn"||sv==="en")lang=sv}catch(e){}
+var max=40000,base=24000;
+function pct(v){return (v/max*100).toFixed(2)+"%"}
+function fmt(v){return (v<0?"\u2212":"+")+"\u09F3"+Math.abs(v).toLocaleString("en-US")}
+function wf(t){
+ var el=document.getElementById("wf"),note=document.getElementById("note");if(!el)return;el.innerHTML="";
+ function row(label,left,width,color,val,msg){var x=document.createElement("button");x.className="row";x.type="button";
+  x.innerHTML='<span>'+label+'</span><span class="track"><span class="bar" style="left:'+pct(left)+';width:'+pct(width)+';background:'+color+'"></span></span><span class="val">'+val+'</span>';
+  x.onclick=function(){[].forEach.call(el.children,function(c){c.classList.remove("on")});x.classList.add("on");note.textContent=msg};el.appendChild(x)}
+ row(t.avg,0,base,"var(--mute)","\u09F324,000",t.avgn);
+ var run=base;t.items.forEach(function(it){var dd=it[1],l=dd>0?run:run+dd;row(it[0],l,Math.abs(dd),dd>0?"var(--up)":"var(--down)",fmt(dd),it[2]);run+=dd});
+ row(t.pred,0,run,"var(--gold)","\u09F3"+run.toLocaleString("en-US"),t.predn);
+}
+function menu(t){
+ d.setAttribute("aria-label",t.sections);
+ d.innerHTML='<h4>'+t.contents+'<button id="cl" aria-label="'+t.close+'">&times;</button></h4>';links=[];
+ function add(id,x){var a=document.createElement("a");a.href="#"+id;a.textContent=x;d.appendChild(a);links.push(a)}
+ add("top",t.top);
+ [].forEach.call(document.querySelectorAll("section[id]"),function(s){add(s.id,s.querySelector("h2").textContent)});
+ document.getElementById("cl").onclick=function(){nav(false)};
+ if(io)io.disconnect();
+ if("IntersectionObserver" in window){io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(a){a.classList.toggle("active",a.getAttribute("href")=="#"+e.target.id)})}})},{rootMargin:"-20% 0px -70% 0px"});
+  [].forEach.call(document.querySelectorAll("header[id],section[id]"),function(s){io.observe(s)})}
+}
+function nav(o){document.body.classList.toggle("nav-open",o);b.setAttribute("aria-expanded",o);if(o)links[0].focus();else b.focus()}
+function apply(l){
+ lang=l;var t=L[l];page.innerHTML=H[l];document.documentElement.lang=l;document.title=t.title;
+ document.getElementById("mbt").textContent=t.menu;lb.textContent=t.btn;lb.setAttribute("aria-label",t.btnl);
+ document.body.classList.remove("nav-open");wf(t);menu(t);
+ try{localStorage.setItem("thesis-lang",l)}catch(e){}
+}
+b.onclick=function(){nav(true)};
+document.getElementById("sc").onclick=function(){nav(false)};
+d.onclick=function(e){if(e.target.tagName=="A")document.body.classList.remove("nav-open")};
+document.onkeydown=function(e){if(e.key=="Escape"&&document.body.classList.contains("nav-open"))nav(false)};
+lb.onclick=function(){apply(lang==="en"?"bn":"en");window.scrollTo(0,0)};
+apply(lang);
+})();
+</script>
+</body>
+</html>
